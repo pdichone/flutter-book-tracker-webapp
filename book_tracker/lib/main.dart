@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Book Tracker',
+      title: 'Book Tracker web apps',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
