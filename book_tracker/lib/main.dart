@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Book Tracker web apps',
+      title: 'Book Tracker web app - Slick Design',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
