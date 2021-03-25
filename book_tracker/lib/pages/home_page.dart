@@ -1,3 +1,4 @@
+import 'package:book_tracker/views/footer.dart';
 import 'package:book_tracker/views/main_body.dart';
 import 'package:flutter/material.dart';
 
@@ -36,8 +37,11 @@ class HomePage extends StatelessWidget {
         children: [
           // Social Buttons
           MainBody(),
+          Spacer(
+            flex: 2,
+          ),
 
-          // Body
+          // Footer(),
         ],
       ),
     );
