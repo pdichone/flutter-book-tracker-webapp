@@ -1,4 +1,3 @@
-import 'package:book_tracker/views/footer.dart';
 import 'package:book_tracker/widgets/currently_reading_list.dart';
 import 'package:flutter/material.dart';
 

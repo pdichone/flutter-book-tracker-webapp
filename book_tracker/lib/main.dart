@@ -1,3 +1,4 @@
+import 'package:book_tracker/pages/getting_started_page.dart';
 import 'package:book_tracker/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Book Tracker web app - Slick Design',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity),
+      home: GettingStartedPage(),
     );
   }
 }
