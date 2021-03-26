@@ -1,3 +1,5 @@
+import 'package:book_tracker/pages/create_account_page.dart';
+import 'package:book_tracker/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -32,10 +34,10 @@ class GettingStartedPage extends StatelessWidget {
                 height: 50,
               ),
               Container(
-                width: 200,
+                width: 220,
                 height: 40,
                 child: TextButton.icon(
-                  label: Text('Login to Get Started'),
+                  label: Text('Sign in to Get Started'),
                   icon: Icon(Icons.login_rounded),
                   style: TextButton.styleFrom(
                     primary: Colors.white,
@@ -43,9 +45,40 @@ class GettingStartedPage extends StatelessWidget {
                     textStyle: TextStyle(fontSize: 18),
                     onSurface: Colors.grey,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    //open login page
+                    //open login page
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                        ));
+                  },
                 ),
               ),
+              SizedBox(
+                height: 20,
+              ),
+              // Text('Or'),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // TextButton.icon(
+              //   label: Text('Create an account'),
+              //   icon: Icon(Icons.account_box_sharp),
+              //   style: TextButton.styleFrom(
+              //     primary: Colors.black,
+              //     textStyle: TextStyle(fontSize: 18),
+              //     onSurface: Colors.grey,
+              //   ),
+              //   onPressed: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => CreateAccountPage(),
+              //         ));
+              //   },
+              // ),
               Spacer(),
             ],
           ),
