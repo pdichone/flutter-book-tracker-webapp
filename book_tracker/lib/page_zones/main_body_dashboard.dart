@@ -1,3 +1,6 @@
+import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/topnav/top_nav_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -8,14 +11,14 @@ class MainBodyDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> readingList = [
-      'Think Again',
-      'Be again,',
-      'Show Your Work',
-      'Psychology of Money',
-      'The History of Humankind',
-      'Everyday Millionaires'
-    ];
+    // List<String> readingList = [
+    //   'Think Again',
+    //   'Be again,',
+    //   'Show Your Work',
+    //   'Psychology of Money',
+    //   'The History of Humankind',
+    //   'Everyday Millionaires'
+    // ];
     return Expanded(
         flex: 5,
         child: Container(
@@ -24,21 +27,8 @@ class MainBodyDashboard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Dashboard',
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                    TextButton.icon(
-                        onPressed: () {},
-                        icon: Icon(Icons.add),
-                        label: Text('Add a book'))
-                  ],
-                ),
+              TopBarNav(
+                title: 'Dashboard',
               ),
               SizedBox(
                 width: 100,
@@ -59,18 +49,33 @@ class MainBodyDashboard extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 30.0),
                 height: 200,
-                child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: createBookCards(readingList)),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('books')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    //convert books into Book objects
+                    final books = snapshot.data.docs.map((book) {
+                      return Book.fromMap(book.data());
+                    }).toList();
+                    return ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: createBookCards(books));
+                  },
+                ),
               )
             ],
           ),
         ));
   }
 
-  List<Widget> createBookCards(List<String> books) {
+  List<Widget> createBookCards(List<Book> books) {
     List<Widget> children = [];
-
     for (var book in books) {
       children.add(
         new Container(
@@ -86,13 +91,23 @@ class MainBodyDashboard extends StatelessWidget {
             child: Wrap(
               children: [
                 Image.network(
-                    'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80'),
+                  (book.photoUrl == null || book.photoUrl.isEmpty)
+                      ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
+                      : book.photoUrl,
+                  //fit: BoxFit.cover,
+                  height: 100,
+                  width: 160,
+                ),
+                // Image.network(book.photoUrl == null
+                //     ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
+                //     : book.photoUrl),
                 ListTile(
                   title: Text(
-                    '$book',
+                    '${book.title}',
                     style: TextStyle(color: HexColor('#5d48b6')),
                   ),
-                  subtitle: Text('Be yourself!'),
+                  subtitle: Text('${book.author}'),
+                  onTap: () {},
                 )
               ],
             ),

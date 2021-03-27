@@ -22,6 +22,7 @@ class MainPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(color: Colors.transparent, width: 1)),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LeftMainMenu(),
             MainBodyDashboard(),
