@@ -2,6 +2,7 @@ import 'package:book_tracker/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class RightMainBody extends StatelessWidget {
   const RightMainBody({
@@ -13,8 +14,12 @@ class RightMainBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _books = Provider.of<List<Book>>(context);
+    final _collectionReference = Provider.of<CollectionReference>(context);
+    
+
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('books').snapshots(),
+      stream: _collectionReference.snapshots(),
       builder: (context, snapshot) {
         // print(snapshot.data.docs.first.data());
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -23,9 +28,9 @@ class RightMainBody extends StatelessWidget {
           );
         }
         //convert books into Book objects
-        final books = snapshot.data.docs.map((book) {
-          return Book.fromMap(book.data());
-        }).toList();
+        // final books = snapshot.data.docs.map((book) {
+        //   return Book.fromDocument(book.data());
+        // }).toList();
         return Expanded(
             flex: 2,
             child: Container(
@@ -116,9 +121,9 @@ class RightMainBody extends StatelessWidget {
                             return Card(
                               child: ListTile(
                                 tileColor: HexColor('#f1f3f6'),
-                                title: Text('${books[index].title}'),
+                                title: Text('${_books[index].title}'),
                                 // title: Text('${books[index]}'),
-                                subtitle: Text('By: ${books[index].author}'),
+                                subtitle: Text('By: ${_books[index].author}'),
                                 leading: Container(
                                   width: 50,
                                   height: 50,

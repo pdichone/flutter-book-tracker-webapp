@@ -1,8 +1,10 @@
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/pages/book_details_page.dart';
 import 'package:book_tracker/topnav/top_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class MainBodyDashboard extends StatelessWidget {
   const MainBodyDashboard({
@@ -11,6 +13,8 @@ class MainBodyDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _books = Provider.of<List<Book>>(context);
+    final _collectionReference = Provider.of<CollectionReference>(context);
     // List<String> readingList = [
     //   'Think Again',
     //   'Be again,',
@@ -50,9 +54,7 @@ class MainBodyDashboard extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 30.0),
                 height: 200,
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('books')
-                      .snapshots(),
+                  stream: _collectionReference.snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
@@ -60,12 +62,12 @@ class MainBodyDashboard extends StatelessWidget {
                       );
                     }
                     //convert books into Book objects
-                    final books = snapshot.data.docs.map((book) {
-                      return Book.fromMap(book.data());
-                    }).toList();
+                    // final books = snapshot.data.docs.map((book) {
+                    //   return Book.fromDocument(book);
+                    // }).toList();
                     return ListView(
                         scrollDirection: Axis.horizontal,
-                        children: createBookCards(books));
+                        children: createBookCards(_books, context));
                   },
                 ),
               )
@@ -74,7 +76,7 @@ class MainBodyDashboard extends StatelessWidget {
         ));
   }
 
-  List<Widget> createBookCards(List<Book> books) {
+  List<Widget> createBookCards(List<Book> books, BuildContext context) {
     List<Widget> children = [];
     for (var book in books) {
       children.add(
@@ -107,7 +109,15 @@ class MainBodyDashboard extends StatelessWidget {
                     style: TextStyle(color: HexColor('#5d48b6')),
                   ),
                   subtitle: Text('${book.author}'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookDetailsPage(
+                            book: book,
+                          ),
+                        ));
+                  },
                 )
               ],
             ),
