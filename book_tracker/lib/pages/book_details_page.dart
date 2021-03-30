@@ -24,9 +24,9 @@ class BookDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Book Details'),
         foregroundColor: Colors.red,
-        backgroundColor: Colors.amberAccent.shade100,
+        backgroundColor: Colors.blueGrey.shade200,
       ),
-      body: //Open an alert form dialog
+      body: 
           Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.3,

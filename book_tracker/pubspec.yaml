@@ -28,6 +28,7 @@ dependencies:
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.2
   hexcolor: ^2.0.3
+  http: ^0.13.1
   provider: ^5.0.0
 
 dev_dependencies:
