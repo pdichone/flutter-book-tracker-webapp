@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/model/book_view_model.dart';
+import 'package:book_tracker/model/query_view_model.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +20,27 @@ class _BookSearchPageState extends State<BookSearchPage> {
   List<Book> listOfBooks = [];
   String _searchVal;
   TextEditingController _searchTextController;
+  bool listIsFull = false;
 
-  Future<void> fetchBooks(String query) async {
+  @override
+  void initState() {
+    super.initState();
+    // listOfBooks = [];
+
+    _searchTextController = TextEditingController();
+
+    // sync the current value in text field to
+    // the view model
+    // _searchTextController.addListener(() {
+    //   Provider.of<QueryEntryViewModel>(context, listen: false)
+    //       .updateQuery(_searchTextController.text);
+    // });
+  }
+
+  Future<List<Book>> fetchBooks(String query) async {
+    List<Book> books = [];
     http.Response response = await http.get(Uri.parse(searchQuery(query)));
+
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
       final Iterable list = body['items'];
@@ -28,36 +48,24 @@ class _BookSearchPageState extends State<BookSearchPage> {
       for (var item in list) {
         String title = item['volumeInfo']['title'];
         String author = item['volumeInfo']['authors'][0];
-        String thumbNail = item['volumeInfo']['imageLinks']['thumbnail'];
-        Book searchBook = new Book(title: title, author: author);
+        String thumbNail = item['volumeInfo']['imageLinks']['smallThumbnail'];
+        Book searchBook =
+            new Book(title: title, author: author, photoUrl: thumbNail);
 
-        listOfBooks.add(searchBook);
+        books.add(searchBook);
 
         // print('${item['volumeInfo']['title']}');
         //print('${item['volumeInfo']['authors']}');
+
       }
 
-      print(listOfBooks);
+      print('Length --> ${books.length}');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //listOfBooks.clear();
-    _searchTextController = TextEditingController();
+    return books;
   }
 
   @override
   Widget build(BuildContext context) {
-    // TextEditingController _searchTextController = TextEditingController();
-    final _books = Provider.of<List<Book>>(context);
-
-    //_books.clear();
-
-    //_books.addAll(listOfBooks);
-
-    final _collectionReference = Provider.of<CollectionReference>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Search'),
@@ -78,14 +86,12 @@ class _BookSearchPageState extends State<BookSearchPage> {
                       child: Form(
                         child: TextField(
                           onSubmitted: (value) {
-                            setState(() {
-                              _searchVal = value;
-                              print(_searchVal);
-                              print('new state! ${listOfBooks.length}');
-                              fetchBooks(_searchVal);
-                              _searchTextController.text = '';
-                            });
-                            listOfBooks.clear();
+                            _search();
+                            // setState(() {
+                            // _searchVal = value;
+
+                            // });
+                            //listOfBooks.clear();
                           },
                           controller: _searchTextController,
                           decoration: buildInputDecoration(
@@ -96,72 +102,76 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   ),
                 ),
               ),
+              (listOfBooks.length > 0 &&
+                      listOfBooks.length < 50) //limit to 50 only
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: 300,
+                            height: 300,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: listOfBooks.length,
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  children:
+                                      createBookCards(listOfBooks, context),
+                                );
 
-              Container(
-                child: Expanded(
-                  child: ListView.builder(
-                    itemCount: listOfBooks.length,
-                    itemBuilder: (context, index) {
-                      if (listOfBooks.isEmpty || listOfBooks == null) {
-                        return CircularProgressIndicator();
-                      } else {
-                        return ListTile(
-                          title: Text('${listOfBooks[index].title}'),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              )
-              // Container(
-              //   child: FutureBuilder<List<Book>>(
-              //     future: fetchBooks(_searchVal),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.data == null) {
-              //         return CircularProgressIndicator();
-              //       } else {
-              //         return Expanded(
-              //           child: ListView.builder(
-              //             itemCount: snapshot.data.length,
-              //             scrollDirection: Axis.horizontal,
-              //             itemBuilder: (context, index) {
-              //               return ListTile(
-              //                 title: Text(snapshot.data[index].author),
-              //                 subtitle: Text('Hello'),
-              //               );
-              //             },
-              //           ),
-              //         );
-              //       }
-              //     },
-              //   ),
-              // )
+                                //return Text('${listOfBooks[index].title}');
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : CircularProgressIndicator()
+              //Text('${listo}')
 
-              // Container(
-              //   margin: const EdgeInsets.symmetric(vertical: 30.0),
-              //   height: 190,
-              //   child: StreamBuilder<QuerySnapshot>(
-              //     stream: _collectionReference.snapshots(),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.connectionState == ConnectionState.waiting) {
-              //         return Center(
-              //           child: CircularProgressIndicator(),
-              //         );
-              //       }
-
-              //       return ListView(
-              //           scrollDirection: Axis.horizontal,
-              //           children: createBookCards(_books, context));
-              //     },
-              //   ),
-              // )
+              //updateBookList(_searchVal)
             ])),
       ),
     );
   }
 
+  Widget updateBookList(String query) {
+    print('Calling UpdateLIst');
+    return FutureBuilder<List<Book>>(
+      future: fetchBooks(query),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        } else {
+          //we are good!
+          print('Inside ==> ${snapshot.data}');
+          return Container(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text(snapshot.data[0].title),
+                )
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  void _search() async {
+    final List<Book> books = await fetchBooks(_searchTextController.text);
+    setState(() {
+      listOfBooks = books;
+      listIsFull = true;
+    });
+  }
+
   List<Widget> createBookCards(List<Book> books, BuildContext context) {
     List<Widget> children = [];
+
     for (var book in books) {
       children.add(
         new Container(
@@ -177,6 +187,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
             child: Wrap(
               children: [
                 Image.network(
+                  //'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80',
                   (book.photoUrl == null || book.photoUrl.isEmpty)
                       ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
                       : book.photoUrl,
@@ -209,3 +220,56 @@ class _BookSearchPageState extends State<BookSearchPage> {
     return children;
   }
 }
+
+// TextEditingController _searchTextController = TextEditingController();
+// final _books = Provider.of<List<Book>>(context);
+
+// return Consumer<QueryEntryViewModel>(
+//   builder: (context, model, child) {
+//     return Material(
+//       elevation: 3,
+//       child: Container(
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.start,
+//           mainAxisSize: MainAxisSize.max,
+//           children: [
+//             IconButton(
+//               icon: Icon(Icons.search),
+//               onPressed: () {
+//                 model.updateQuery(_searchTextController.text);
+//                 model.refreshBooks(_searchTextController.text, context);
+//               },
+//             ),
+//             SizedBox(
+//               width: 12,
+//             ),
+//             Expanded(
+//                 child: TextField(
+//               controller: _searchTextController,
+//               decoration: buildInputDecoration(
+//                   'Enter query', 'Gone with the wind..'),
+//               onSubmitted: (String query) {
+//                 model.refreshBooks(query, context);
+//               },
+//             )),
+//             Column(
+//               children: [
+//                 Consumer<BookViewModel>(builder: (context, value, child) {
+//                   Future<List<Book>> books =
+//                       value.getRecentBookSearch(_searchTextController.text);
+
+//                   books.then((value) {
+//                     for (var item in value) {
+//                       print('${item.title}');
+//                     }
+//                   });
+//                   return Text("hey");
+//                 }),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   },
+// );
