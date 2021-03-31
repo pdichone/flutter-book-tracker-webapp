@@ -8,7 +8,6 @@ import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class BookSearchPage extends StatefulWidget {
@@ -18,23 +17,15 @@ class BookSearchPage extends StatefulWidget {
 
 class _BookSearchPageState extends State<BookSearchPage> {
   List<Book> listOfBooks = [];
-  String _searchVal;
+
   TextEditingController _searchTextController;
   bool listIsFull = false;
 
   @override
   void initState() {
     super.initState();
-    // listOfBooks = [];
 
     _searchTextController = TextEditingController();
-
-    // sync the current value in text field to
-    // the view model
-    // _searchTextController.addListener(() {
-    //   Provider.of<QueryEntryViewModel>(context, listen: false)
-    //       .updateQuery(_searchTextController.text);
-    // });
   }
 
   Future<List<Book>> fetchBooks(String query) async {
@@ -62,6 +53,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
         //print('${item['volumeInfo']['authors']}');
 
       }
+      print('Size ==> ${books.length}');
     }
     return books;
   }
@@ -99,7 +91,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   ),
                 ),
               ),
-              (listOfBooks.length > 0) //limit to 50 only
+              (listOfBooks.length > 0)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +104,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
                               scrollDirection: Axis.horizontal,
                               itemCount: listOfBooks.length,
                               itemBuilder: (context, index) {
+                                print('Index ==> ${listOfBooks.length}');
                                 return Row(
                                   children:
                                       createBookCards(listOfBooks, context),
@@ -124,33 +117,11 @@ class _BookSearchPageState extends State<BookSearchPage> {
                         ),
                       ],
                     )
-                  : CircularProgressIndicator()
+                  : Center(
+                      child: Text(''),
+                    )
             ])),
       ),
-    );
-  }
-
-  Widget updateBookList(String query) {
-    print('Calling UpdateLIst');
-    return FutureBuilder<List<Book>>(
-      future: fetchBooks(query),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        } else {
-          //we are good!
-          print('Inside ==> ${snapshot.data}');
-          return Container(
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(snapshot.data[0].title),
-                )
-              ],
-            ),
-          );
-        }
-      },
     );
   }
 
@@ -158,12 +129,15 @@ class _BookSearchPageState extends State<BookSearchPage> {
     final List<Book> books = await fetchBooks(_searchTextController.text);
     setState(() {
       listOfBooks = books;
+      print('SetState size ==> ${listOfBooks.length}');
       listIsFull = true;
     });
   }
 
   List<Widget> createBookCards(List<Book> books, BuildContext context) {
     List<Widget> children = [];
+
+    print('Createbook Card Inside Size:  ---> ${books.length}');
 
     for (var book in books) {
       children.add(
@@ -210,6 +184,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
         ),
       );
     }
+    print('Children size ---> ${children.length}');
     return children;
   }
 }
