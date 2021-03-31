@@ -48,6 +48,10 @@ class _BookSearchPageState extends State<BookSearchPage> {
       for (var item in list) {
         String title = item['volumeInfo']['title'];
         String author = item['volumeInfo']['authors'][0];
+        /* 
+        or... run in: flutter run -d chrome --web-renderer html
+        or.. change luancher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
+        to render images run web-renderer: https://stackoverflow.com/questions/66060984/flutter-web-image-loading-in-mobile-view-but-not-in-full-view */
         String thumbNail = item['volumeInfo']['imageLinks']['smallThumbnail'];
         Book searchBook =
             new Book(title: title, author: author, photoUrl: thumbNail);
@@ -58,8 +62,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
         //print('${item['volumeInfo']['authors']}');
 
       }
-
-      print('Length --> ${books.length}');
     }
     return books;
   }
@@ -87,11 +89,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
                         child: TextField(
                           onSubmitted: (value) {
                             _search();
-                            // setState(() {
-                            // _searchVal = value;
-
-                            // });
-                            //listOfBooks.clear();
                           },
                           controller: _searchTextController,
                           decoration: buildInputDecoration(
@@ -102,8 +99,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   ),
                 ),
               ),
-              (listOfBooks.length > 0 &&
-                      listOfBooks.length < 50) //limit to 50 only
+              (listOfBooks.length > 0) //limit to 50 only
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,9 +125,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
                       ],
                     )
                   : CircularProgressIndicator()
-              //Text('${listo}')
-
-              //updateBookList(_searchVal)
             ])),
       ),
     );
