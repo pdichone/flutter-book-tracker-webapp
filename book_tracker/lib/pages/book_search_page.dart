@@ -4,6 +4,7 @@ import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/book_view_model.dart';
 import 'package:book_tracker/model/query_view_model.dart';
+import 'package:book_tracker/pages/search_book_details_dialog.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -32,24 +33,41 @@ class _BookSearchPageState extends State<BookSearchPage> {
   Future<List<Book>> fetchBooks(String query) async {
     List<Book> books = [];
     http.Response response = await http.get(Uri.parse(searchQuery(query)));
+    String test = response.request.url.toString();
+    print(test);
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
-      final Iterable list = body['items'];
+      var list = body['items'];
+      // final Iterable list = body['items'];
+      print('Items ==> ${list.toString()}');
 
       for (var item in list) {
         String title = item['volumeInfo']['title'];
-        String author = item['volumeInfo']['authors'][0];
-        String publishedDate = item['volumeInfo']['publishedDate'];
-        String description = item['volumeInfo']['description'];
-        int pageCount = item['volumeInfo']['pageCount'];
-        String categories = item['volumeInfo']['categories'][0];
+        String author = item['volumeInfo']['authors'] == null
+            ? "N/A"
+            : item['volumeInfo']['authors'][0];
+        String thumbNail = (item['volumeInfo']['imageLinks'] == null)
+            ? ""
+            : item['volumeInfo']['imageLinks']['thumbnail'];
+        String publishedDate = item['volumeInfo']['publishedDate'] == null
+            ? "N/A"
+            : item['volumeInfo']['publishedDate'];
+        String description = item['volumeInfo']['description'] == null
+            ? "N/A"
+            : item['volumeInfo']['description'];
+        int pageCount = item['volumeInfo']['pageCount'] == null
+            ? 0
+            : item['volumeInfo']['pageCount'];
+        String categories = item['volumeInfo']['categories'] == null
+            ? "N/A"
+            : item['volumeInfo']['categories'][0];
 
         /* 
         or... run in: flutter run -d chrome --web-renderer html
         or.. change luancher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
         to render images run web-renderer: https://stackoverflow.com/questions/66060984/flutter-web-image-loading-in-mobile-view-but-not-in-full-view */
-        String thumbNail = item['volumeInfo']['imageLinks']['smallThumbnail'];
+
         Book searchBook = new Book(
             title: title,
             author: author,
@@ -60,20 +78,17 @@ class _BookSearchPageState extends State<BookSearchPage> {
             categories: categories);
 
         books.add(searchBook);
-
-        // print('${item['volumeInfo']['title']}');
-        //print('${item['volumeInfo']['authors']}');
-
       }
       print('Size ==> ${books.length}');
+    } else {
+      throw ('error ${response.reasonPhrase}');
     }
+
     return books;
   }
 
   @override
   Widget build(BuildContext context) {
-    final _collectionReference = Provider.of<CollectionReference>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Search'),
@@ -108,7 +123,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
               SizedBox(
                 height: 10,
               ),
-              (listOfBooks.length > 0)
+              (listOfBooks != null)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +141,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
                       ],
                     )
                   : Center(
-                      child: Text(''),
+                      child: Text('No books found'),
                     )
             ])),
       ),
@@ -134,11 +149,14 @@ class _BookSearchPageState extends State<BookSearchPage> {
   }
 
   void _search() async {
-    final List<Book> books = await fetchBooks(_searchTextController.text);
-    setState(() {
-      listOfBooks = books;
-      //print('SetState size ==> ${listOfBooks.length}');
-      listIsFull = true;
+    await fetchBooks(_searchTextController.text).then((value) {
+      setState(() {
+        listOfBooks = value;
+        //print('SetState size ==> ${listOfBooks.length}');
+        listIsFull = true;
+      });
+    }, onError: (val) {
+      throw Exception('Failed to load books ${val.toString()}');
     });
   }
 
@@ -146,8 +164,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
     final _collectionReference = Provider.of<CollectionReference>(context);
 
     List<Widget> children = [];
-
-    print('Createbook Card Inside Size:  ---> ${books.length}');
 
     for (var book in books) {
       children.add(
@@ -190,104 +206,9 @@ class _BookSearchPageState extends State<BookSearchPage> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return AlertDialog(
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    backgroundImage: NetworkImage(
-                                        'https://picsum.photos/900/600'),
-                                    radius: 50,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${book.title}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Category: ${book.categories}'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Page Count: ${book.pageCount}'),
-                              ),
-                              Text('Author: ${book.author}'),
-                              Text('Published: ${book.publishedDate}'),
-                              Container(
-                                margin: const EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.blueGrey.shade100,
-                                        width: 1)),
-                                child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        '${book.description}',
-                                        // style: TextStyle(letterSpacing: 2),
-                                      ),
-                                    )),
-                              )
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                                style: TextButton.styleFrom(
-                                  primary: Colors.white,
-                                  padding: EdgeInsets.all(15),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  backgroundColor: Colors.amber,
-                                  textStyle: TextStyle(fontSize: 18),
-                                  onSurface: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  //save this new book to the list
-                                  _collectionReference.add(Book(
-                                          title: book.title,
-                                          author: book.author,
-                                          photoUrl: book.photoUrl,
-                                          publishedDate: book.publishedDate,
-                                          description: book.description,
-                                          pageCount: book.pageCount,
-                                          categories: book.categories)
-                                      .toMap());
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Save')),
-                            SizedBox(
-                              width: 100,
-                            ),
-                            TextButton(
-                                style: TextButton.styleFrom(
-                                  primary: Colors.white,
-                                  padding: EdgeInsets.all(15),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
-                                  backgroundColor: Colors.amber,
-                                  textStyle: TextStyle(fontSize: 18),
-                                  onSurface: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Cancel')),
-                          ],
-                        );
+                        return SearchedBookDetailDialog(
+                            book: book,
+                            collectionReference: _collectionReference);
                       },
                     );
                     // Navigator.push(
