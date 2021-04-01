@@ -31,10 +31,6 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<QueryEntryViewModel>(
-          create: (_) => QueryEntryViewModel(),
-        ),
-        ChangeNotifierProvider<BookViewModel>(create: (_) => BookViewModel()),
         Provider<CollectionReference>(
           create: (context) => linkCollection,
         ),

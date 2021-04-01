@@ -2,6 +2,7 @@ import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddBookManually extends StatelessWidget {
   const AddBookManually({
@@ -10,6 +11,7 @@ class AddBookManually extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _collectionReference = Provider.of<CollectionReference>(context);
     return TextButton.icon(
       style: ButtonStyle(),
       icon: Icon(Icons.add),
@@ -74,12 +76,11 @@ class AddBookManually extends StatelessWidget {
                             onSurface: Colors.grey,
                           ),
                           onPressed: () {
-                            FirebaseFirestore.instance.collection('books').add(
-                                Book(
-                                        title: _titleTextController.text,
-                                        author: _authorTextController.text,
-                                        photoUrl: _photoTextController.text)
-                                    .toMap());
+                            _collectionReference.add(Book(
+                                    title: _titleTextController.text,
+                                    author: _authorTextController.text,
+                                    photoUrl: _photoTextController.text)
+                                .toMap());
                             Navigator.of(context).pop();
                           },
                           child: Text('Save')),

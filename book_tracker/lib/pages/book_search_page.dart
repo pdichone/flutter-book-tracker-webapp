@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class BookSearchPage extends StatefulWidget {
   @override
@@ -39,13 +40,24 @@ class _BookSearchPageState extends State<BookSearchPage> {
       for (var item in list) {
         String title = item['volumeInfo']['title'];
         String author = item['volumeInfo']['authors'][0];
+        String publishedDate = item['volumeInfo']['publishedDate'];
+        String description = item['volumeInfo']['description'];
+        int pageCount = item['volumeInfo']['pageCount'];
+        String categories = item['volumeInfo']['categories'][0];
+
         /* 
         or... run in: flutter run -d chrome --web-renderer html
         or.. change luancher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
         to render images run web-renderer: https://stackoverflow.com/questions/66060984/flutter-web-image-loading-in-mobile-view-but-not-in-full-view */
         String thumbNail = item['volumeInfo']['imageLinks']['smallThumbnail'];
-        Book searchBook =
-            new Book(title: title, author: author, photoUrl: thumbNail);
+        Book searchBook = new Book(
+            title: title,
+            author: author,
+            photoUrl: thumbNail,
+            publishedDate: publishedDate,
+            description: description,
+            pageCount: pageCount,
+            categories: categories);
 
         books.add(searchBook);
 
@@ -60,6 +72,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _collectionReference = Provider.of<CollectionReference>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Search'),
@@ -91,6 +105,9 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
               (listOfBooks.length > 0)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -99,19 +116,10 @@ class _BookSearchPageState extends State<BookSearchPage> {
                         Expanded(
                           child: SizedBox(
                             width: 300,
-                            height: 300,
-                            child: ListView.builder(
+                            height: 200,
+                            child: ListView(
                               scrollDirection: Axis.horizontal,
-                              itemCount: listOfBooks.length,
-                              itemBuilder: (context, index) {
-                                print('Index ==> ${listOfBooks.length}');
-                                return Row(
-                                  children:
-                                      createBookCards(listOfBooks, context),
-                                );
-
-                                //return Text('${listOfBooks[index].title}');
-                              },
+                              children: createBookCards(listOfBooks, context),
                             ),
                           ),
                         ),
@@ -129,19 +137,21 @@ class _BookSearchPageState extends State<BookSearchPage> {
     final List<Book> books = await fetchBooks(_searchTextController.text);
     setState(() {
       listOfBooks = books;
-      print('SetState size ==> ${listOfBooks.length}');
+      //print('SetState size ==> ${listOfBooks.length}');
       listIsFull = true;
     });
   }
 
   List<Widget> createBookCards(List<Book> books, BuildContext context) {
+    final _collectionReference = Provider.of<CollectionReference>(context);
+
     List<Widget> children = [];
 
     print('Createbook Card Inside Size:  ---> ${books.length}');
 
     for (var book in books) {
       children.add(
-        new Container(
+        Container(
           width: 160,
           margin: const EdgeInsets.symmetric(horizontal: 12.0),
           decoration: BoxDecoration(
@@ -157,7 +167,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   //'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80',
                   (book.photoUrl == null || book.photoUrl.isEmpty)
                       ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
-                      : book.photoUrl,
+                      //: book.photoUrl,
+                      : 'https://picsum.photos/900/600',
                   //fit: BoxFit.cover,
                   height: 100,
                   width: 160,
@@ -165,10 +176,120 @@ class _BookSearchPageState extends State<BookSearchPage> {
                 ListTile(
                   title: Text(
                     '${book.title}',
-                    style: TextStyle(color: HexColor('#5d48b6')),
+                    style: TextStyle(
+                      color: HexColor('#5d48b6'),
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: Text('${book.author}'),
+                  subtitle: Text(
+                    '${book.author}',
+                    // overflow: TextOverflow.ellipsis
+                  ),
                   onTap: () {
+                    //show book details popup
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage: NetworkImage(
+                                        'https://picsum.photos/900/600'),
+                                    radius: 50,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  '${book.title}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Category: ${book.categories}'),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Page Count: ${book.pageCount}'),
+                              ),
+                              Text('Author: ${book.author}'),
+                              Text('Published: ${book.publishedDate}'),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.blueGrey.shade100,
+                                        width: 1)),
+                                child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '${book.description}',
+                                        // style: TextStyle(letterSpacing: 2),
+                                      ),
+                                    )),
+                              )
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                  primary: Colors.white,
+                                  padding: EdgeInsets.all(15),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  backgroundColor: Colors.amber,
+                                  textStyle: TextStyle(fontSize: 18),
+                                  onSurface: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  //save this new book to the list
+                                  _collectionReference.add(Book(
+                                          title: book.title,
+                                          author: book.author,
+                                          photoUrl: book.photoUrl,
+                                          publishedDate: book.publishedDate,
+                                          description: book.description,
+                                          pageCount: book.pageCount,
+                                          categories: book.categories)
+                                      .toMap());
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Save')),
+                            SizedBox(
+                              width: 100,
+                            ),
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                  primary: Colors.white,
+                                  padding: EdgeInsets.all(15),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4)),
+                                  backgroundColor: Colors.amber,
+                                  textStyle: TextStyle(fontSize: 18),
+                                  onSurface: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Cancel')),
+                          ],
+                        );
+                      },
+                    );
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
@@ -184,60 +305,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
         ),
       );
     }
-    print('Children size ---> ${children.length}');
+
     return children;
   }
 }
-
-// TextEditingController _searchTextController = TextEditingController();
-// final _books = Provider.of<List<Book>>(context);
-
-// return Consumer<QueryEntryViewModel>(
-//   builder: (context, model, child) {
-//     return Material(
-//       elevation: 3,
-//       child: Container(
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           mainAxisSize: MainAxisSize.max,
-//           children: [
-//             IconButton(
-//               icon: Icon(Icons.search),
-//               onPressed: () {
-//                 model.updateQuery(_searchTextController.text);
-//                 model.refreshBooks(_searchTextController.text, context);
-//               },
-//             ),
-//             SizedBox(
-//               width: 12,
-//             ),
-//             Expanded(
-//                 child: TextField(
-//               controller: _searchTextController,
-//               decoration: buildInputDecoration(
-//                   'Enter query', 'Gone with the wind..'),
-//               onSubmitted: (String query) {
-//                 model.refreshBooks(query, context);
-//               },
-//             )),
-//             Column(
-//               children: [
-//                 Consumer<BookViewModel>(builder: (context, value, child) {
-//                   Future<List<Book>> books =
-//                       value.getRecentBookSearch(_searchTextController.text);
-
-//                   books.then((value) {
-//                     for (var item in value) {
-//                       print('${item.title}');
-//                     }
-//                   });
-//                   return Text("hey");
-//                 }),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   },
-// );

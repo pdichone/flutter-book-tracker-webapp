@@ -7,6 +7,10 @@ class Book {
   final String notes;
   final String photoUrl;
   final bool isFinished;
+  final String publishedDate;
+  final String description;
+  final int pageCount;
+  final String categories;
   final String id;
 
   Book(
@@ -15,6 +19,10 @@ class Book {
       @required this.author,
       this.notes,
       this.photoUrl,
+      this.publishedDate,
+      this.description,
+      this.pageCount,
+      this.categories,
       this.isFinished});
 
   factory Book.fromDocument(QueryDocumentSnapshot data) {
@@ -24,6 +32,10 @@ class Book {
         author: data.data()['author'],
         notes: data.data()['notes'],
         photoUrl: data.data()['photo_url'],
+        publishedDate: data.data()['published_date'],
+        description: data.data()['description'],
+        pageCount: data.data()['page_count'],
+        categories: data.data()['categories'],
         isFinished: data.data()['finished']);
   }
   // factory Book.fromMap(Map<String, dynamic> data) {
@@ -41,6 +53,10 @@ class Book {
       'author': author,
       'notes': notes,
       'photo_url': photoUrl,
+      'published_date': publishedDate,
+      'description': description,
+      'page_count': pageCount,
+      'categories': categories,
       'finished': isFinished
     };
   }
