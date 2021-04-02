@@ -11,6 +11,8 @@ class Book {
   final String description;
   final int pageCount;
   final String categories;
+  final Timestamp startedReading;
+  final Timestamp finishedReading;
   final String id;
 
   Book(
@@ -23,6 +25,8 @@ class Book {
       this.description,
       this.pageCount,
       this.categories,
+      this.startedReading,
+      this.finishedReading,
       this.isFinished});
 
   factory Book.fromDocument(QueryDocumentSnapshot data) {
@@ -36,6 +40,8 @@ class Book {
         description: data.data()['description'],
         pageCount: data.data()['page_count'],
         categories: data.data()['categories'],
+        startedReading: data.data()['started_reading_at'],
+        finishedReading: data.data()['finished_reading_at'],
         isFinished: data.data()['finished']);
   }
   // factory Book.fromMap(Map<String, dynamic> data) {
@@ -57,6 +63,8 @@ class Book {
       'description': description,
       'page_count': pageCount,
       'categories': categories,
+      'started_reading_at': startedReading,
+      'finished_reading_at': finishedReading,
       'finished': isFinished
     };
   }

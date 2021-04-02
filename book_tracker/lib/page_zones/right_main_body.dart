@@ -1,4 +1,5 @@
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/pages/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -16,7 +17,6 @@ class RightMainBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final _books = Provider.of<List<Book>>(context);
     final _collectionReference = Provider.of<CollectionReference>(context);
-    
 
     return StreamBuilder<QuerySnapshot>(
       stream: _collectionReference.snapshots(),
@@ -27,10 +27,14 @@ class RightMainBody extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        //convert books into Book objects
-        // final books = snapshot.data.docs.map((book) {
-        //   return Book.fromDocument(book.data());
-        // }).toList();
+        //Filter read books only!
+        final userBookFilteredReadListStream = snapshot.data.docs.map((book) {
+          return Book.fromDocument(book);
+        }).where((book) {
+          //only give us books that are being read, currently!
+          return (book.startedReading != null) &&
+              (book.finishedReading != null);
+        }).toList();
         return Expanded(
             flex: 2,
             child: Container(
@@ -116,14 +120,17 @@ class RightMainBody extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.builder(
-                          itemCount: books.length,
+                          itemCount: userBookFilteredReadListStream
+                              .length, //_books.length,
                           itemBuilder: (context, index) {
                             return Card(
                               child: ListTile(
                                 tileColor: HexColor('#f1f3f6'),
-                                title: Text('${_books[index].title}'),
+                                title: Text(
+                                    '${userBookFilteredReadListStream[index].title}'),
                                 // title: Text('${books[index]}'),
-                                subtitle: Text('By: ${_books[index].author}'),
+                                subtitle: Text(
+                                    'By: ${userBookFilteredReadListStream[index].author}'),
                                 leading: Container(
                                   width: 50,
                                   height: 50,
@@ -141,7 +148,17 @@ class RightMainBody extends StatelessWidget {
                                   )),
                                 ),
                                 trailing: Icon((Icons.more_vert)),
-                                onTap: () {},
+                                onTap: () {
+                                  //Go to book details on click
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BookDetailsPage(
+                                          book: userBookFilteredReadListStream[
+                                              index],
+                                        ),
+                                      ));
+                                },
                               ),
                             );
                           }),

@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/model/book_view_model.dart';
-import 'package:book_tracker/model/query_view_model.dart';
 import 'package:book_tracker/pages/search_book_details_dialog.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,8 +36,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
-      var list = body['items'];
-      // final Iterable list = body['items'];
+      //var list = body['items'];
+      final Iterable list = body['items'];
       print('Items ==> ${list.toString()}');
 
       for (var item in list) {

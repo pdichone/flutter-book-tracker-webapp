@@ -13,7 +13,6 @@ class MainBodyDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _books = Provider.of<List<Book>>(context);
     final _collectionReference = Provider.of<CollectionReference>(context);
     // List<String> readingList = [
     //   'Think Again',
@@ -61,13 +60,62 @@ class MainBodyDashboard extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    //convert books into Book objects
-                    // final books = snapshot.data.docs.map((book) {
-                    //   return Book.fromDocument(book);
-                    // }).toList();
+
+                    //Filter 'reading' books!!
+                    final userBookFilteredDataStream =
+                        snapshot.data.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      //only give us books that are being read, currently!
+                      return (book.startedReading != null) &&
+                          (book.finishedReading == null);
+                    }).toList();
+
+                    return userBookFilteredDataStream.isNotEmpty
+                        ? ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: createBookCards(
+                                userBookFilteredDataStream, context))
+                        : Center(
+                            child: Text(
+                                'You\'re not reading any books :( add a book and get started.'));
+                  },
+                ),
+              ),
+
+              // ** Reading List ***
+              SizedBox(
+                child: Text(
+                  'Reading List',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 30.0),
+                height: 200,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _collectionReference.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    //Filter to show only books that haven't been started and finished
+                    //Filter 'reading' books!!
+                    final userBookFilteredReadingListStream =
+                        snapshot.data.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      //only give us books that are being read, currently!
+                      return (book.startedReading == null) &&
+                          (book.finishedReading == null);
+                    });
                     return ListView(
                         scrollDirection: Axis.horizontal,
-                        children: createBookCards(_books, context));
+                        children: createBookCards(
+                            userBookFilteredReadingListStream.toList(),
+                            context));
                   },
                 ),
               )
