@@ -91,8 +91,8 @@ class MainBodyDashboard extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 30.0),
-                height: 200,
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
+                height: MediaQuery.of(context).size.height * 0.2,
                 child: StreamBuilder<QuerySnapshot>(
                   stream: _collectionReference.snapshots(),
                   builder: (context, snapshot) {

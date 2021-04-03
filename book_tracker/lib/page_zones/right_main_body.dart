@@ -105,7 +105,7 @@ class RightMainBody extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Books Read',
+                      'Books Read (${userBookFilteredReadListStream.length})',
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
