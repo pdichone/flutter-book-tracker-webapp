@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final linkCollection = FirebaseFirestore.instance.collection('books');
-
     final userBookDataStream = linkCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((book) {
         return Book.fromDocument(book);
