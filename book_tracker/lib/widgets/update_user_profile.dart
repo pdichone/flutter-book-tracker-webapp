@@ -44,28 +44,28 @@ class UpdateUserProfile extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: TextFormField(
               controller: _displayNameTextController,
-              decoration: buildInputDecoration('', ''),
+              decoration: buildInputDecoration('Your name', ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextFormField(
               controller: _professionTextController,
-              decoration: buildInputDecoration("", ''),
+              decoration: buildInputDecoration("Profession", ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextFormField(
               controller: _quoteTextController,
-              decoration: buildInputDecoration("", ''),
+              decoration: buildInputDecoration("Your favorite quote", ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextFormField(
               controller: _avatarTextController,
-              decoration: buildInputDecoration("", ''),
+              decoration: buildInputDecoration("Avatar url", ''),
             ),
           ),
           SizedBox(

@@ -41,17 +41,18 @@ class MainBodyDashboard extends StatelessWidget {
                 color: Colors.red,
               ),
             ),
+
             SizedBox(
-              height: 90,
-            ),
-            SizedBox(
-              child: Text(
-                'Currently Reading',
-                style: Theme.of(context).textTheme.headline5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                child: Text(
+                  'Currently Reading',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.symmetric(vertical: 30.0),
+              margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30),
               height: 200,
               child: StreamBuilder<QuerySnapshot>(
                 stream: _collectionReference.snapshots(),
@@ -89,13 +90,16 @@ class MainBodyDashboard extends StatelessWidget {
 
             // ** Reading List ***
             SizedBox(
-              child: Text(
-                'Reading List',
-                style: Theme.of(context).textTheme.headline5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                child: Text(
+                  'Reading List',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
             ),
             Container(
-              margin: const EdgeInsets.symmetric(vertical: 10.0),
+              margin: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 30),
               height: MediaQuery.of(context).size.height * 0.2,
               child: StreamBuilder<QuerySnapshot>(
                 stream: _collectionReference.snapshots(),
@@ -167,9 +171,14 @@ class MainBodyDashboard extends StatelessWidget {
                 ListTile(
                   title: Text(
                     '${book.title}',
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: HexColor('#5d48b6')),
                   ),
-                  subtitle: Text('${book.author}'),
+                  subtitle: Text(
+                    '${book.author}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(),
+                  ),
                   onTap: () {
                     Navigator.push(
                         context,

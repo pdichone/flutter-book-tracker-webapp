@@ -15,8 +15,10 @@ void main() {
   runApp(MyApp());
 }
 
-
 /* 
+
+--->>> Better strategy: add html rendered in runtime: https://flutter.dev/docs/development/tools/web-renderers
+Deployment: use flutter build web --web-renderer html to render html for images to work!
  To see images
         or... run in: flutter run -d chrome --web-renderer html
         or.. change luancher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
@@ -37,7 +39,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         StreamProvider<User>(
-              
             create: (context) => FirebaseAuth.instance.authStateChanges(),
             initialData: null),
         Provider<CollectionReference>(
@@ -58,10 +59,21 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity),
         initialRoute: '/',
-        routes: {
-          '/': (context) => GettingStartedPage(),
-          '/main': (context) => MainPage(),
-          '/login': (context) => LoginPage()
+        //initialRoute: '/',
+        // routes: {
+        //   '/': (context) => GettingStartedPage(),
+        //   '/main': (context) => MainPage(),
+        //   '/login': (context) => LoginPage()
+        // },
+        //
+        /* advanced routing */
+        onGenerateRoute: (settings) {
+          print(settings.name);
+          return MaterialPageRoute(
+            builder: (context) {
+              return RouteController(settingsName: settings.name);
+            },
+          );
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(builder: (context) {
@@ -71,5 +83,32 @@ class MyApp extends StatelessWidget {
         //home: MainPage(),
       ),
     );
+  }
+}
+
+class RouteController extends StatelessWidget {
+  final String settingsName;
+  const RouteController({
+    Key key,
+    @required this.settingsName,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final userSignedIn = Provider.of<User>(context) != null;
+    //print(userSignedIn);
+    final signedInGotoMain =
+        userSignedIn && settingsName == '/main'; // they are good to go!
+    final notSignedInGotoMain = !userSignedIn &&
+        settingsName == '/main'; //not signed in user trying to go to mainPage
+    if (settingsName == '/') {
+      return GettingStartedPage();
+    } else if (settingsName == '/login' || notSignedInGotoMain) {
+      return LoginPage();
+    } else if (signedInGotoMain) {
+      return MainPage();
+    } else {
+      return PageNotFound();
+    }
   }
 }
