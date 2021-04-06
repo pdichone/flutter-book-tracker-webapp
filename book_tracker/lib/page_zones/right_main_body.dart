@@ -2,6 +2,7 @@ import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/page_zones/main_page.dart';
 import 'package:book_tracker/pages/book_details_page.dart';
+import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/update_user_profile.dart';
@@ -114,6 +115,7 @@ class RightMainBody extends StatelessWidget {
                                 // title: Text('${books[index]}'),
                                 subtitle: Text(
                                     'By: ${userBookFilteredReadListStream[index].author}'),
+
                                 leading: Container(
                                     width: 50,
                                     height: 50,
@@ -135,7 +137,15 @@ class RightMainBody extends StatelessWidget {
                                       ),
                                       radius: 50,
                                     )),
-                                trailing: Icon((Icons.more_vert)),
+                                trailing: Column(children: [
+                                  Text(
+                                    'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                    style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 13),
+                                  ),
+                                  Icon((Icons.more_horiz_outlined))
+                                ]),
                                 onTap: () {
                                   //Go to book details on click
                                   Navigator.push(

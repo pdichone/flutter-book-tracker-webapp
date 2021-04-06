@@ -1,5 +1,6 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/page_zones/main_page.dart';
+import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -252,7 +253,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     );
   }
 
-  String formattDate(Timestamp timestamp) {
-    return DateFormat.yMMMd().format(timestamp.toDate());
-  }
+  // String formattDate(Timestamp timestamp) {
+  //   return DateFormat.yMMMd().format(timestamp.toDate());
+  // }
 }
