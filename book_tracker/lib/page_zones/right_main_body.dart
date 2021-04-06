@@ -120,8 +120,6 @@ class RightMainBody extends StatelessWidget {
                                     width: 50,
                                     height: 50,
                                     decoration: BoxDecoration(
-                                        // color: HexColor('#5d48b6'),
-                                        //border: Border.all(width: 5),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(5))),
                                     child: CircleAvatar(

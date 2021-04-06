@@ -1,9 +1,6 @@
-import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/pages/book_search_page.dart';
 import 'package:book_tracker/widgets/add_book_manually_dialog.dart';
 import 'package:book_tracker/widgets/add_book_search.dart';
-import 'package:book_tracker/widgets/input_decoration.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 
 class TopBarNav extends StatelessWidget {
