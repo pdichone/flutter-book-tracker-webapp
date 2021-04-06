@@ -2,6 +2,7 @@ import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/pages/book_details_page.dart';
 import 'package:book_tracker/topnav/top_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,8 @@ class MainBodyDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _collectionReference = Provider.of<CollectionReference>(context);
+    final user = Provider.of<User>(context);
+
     // List<String> readingList = [
     //   'Think Again',
     //   'Be again,',
@@ -24,107 +27,117 @@ class MainBodyDashboard extends StatelessWidget {
     // ];
     return Expanded(
         flex: 5,
-        child: Container(
-          margin: const EdgeInsets.all(49),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TopBarNav(
-                title: 'Dashboard',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TopBarNav(
+              title: 'Dashboard',
+            ),
+            SizedBox(
+              width: 100,
+              height: 2,
+              child: Container(
+                color: Colors.red,
               ),
-              SizedBox(
-                width: 100,
-                height: 2,
-                child: Container(
-                  color: Colors.red,
-                ),
+            ),
+            SizedBox(
+              height: 90,
+            ),
+            SizedBox(
+              child: Text(
+                'Currently Reading',
+                style: Theme.of(context).textTheme.headline5,
               ),
-              SizedBox(
-                height: 90,
-              ),
-              SizedBox(
-                child: Text(
-                  'Currently Reading',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 30.0),
-                height: 200,
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: _collectionReference.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 30.0),
+              height: 200,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _collectionReference.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                    //Filter 'reading' books!!
-                    final userBookFilteredDataStream =
-                        snapshot.data.docs.map((book) {
-                      return Book.fromDocument(book);
-                    }).where((book) {
-                      //only give us books that are being read, currently!
-                      return (book.startedReading != null) &&
-                          (book.finishedReading == null);
-                    }).toList();
+                  //Filter 'reading' books!!
+                  final userBookFilteredDataStream =
+                      snapshot.data.docs.map((book) {
+                    return Book.fromDocument(book);
+                  }).where((book) {
+                    //only give us books that are being read, currently!
+                    return (book.startedReading != null) &&
+                        (book.finishedReading == null) &&
+                        (book.userId == user.uid);
+                  }).toList();
 
-                    return userBookFilteredDataStream.isNotEmpty
-                        ? ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: createBookCards(
-                                userBookFilteredDataStream, context))
-                        : Center(
-                            child: Text(
-                                'You\'re not reading any books :( add a book and get started.'));
-                  },
-                ),
+                  return userBookFilteredDataStream.isNotEmpty
+                      ? ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: createBookCards(
+                              userBookFilteredDataStream, context, user))
+                      : Center(
+                          child: Text(
+                          'You\'re not reading any books :( add a book and get started.',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ));
+                },
               ),
+            ),
 
-              // ** Reading List ***
-              SizedBox(
-                child: Text(
-                  'Reading List',
-                  style: Theme.of(context).textTheme.headline5,
-                ),
+            // ** Reading List ***
+            SizedBox(
+              child: Text(
+                'Reading List',
+                style: Theme.of(context).textTheme.headline5,
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10.0),
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: _collectionReference.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    //Filter to show only books that haven't been started and finished
-                    //Filter 'reading' books!!
-                    final userBookFilteredReadingListStream =
-                        snapshot.data.docs.map((book) {
-                      return Book.fromDocument(book);
-                    }).where((book) {
-                      //only give us books that are being read, currently!
-                      return (book.startedReading == null) &&
-                          (book.finishedReading == null);
-                    });
-                    return ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: createBookCards(
-                            userBookFilteredReadingListStream.toList(),
-                            context));
-                  },
-                ),
-              )
-            ],
-          ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10.0),
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _collectionReference.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  //Filter to show only books that haven't been started and finished
+                  //Filter 'reading' books!!
+                  final userBookFilteredReadingListStream =
+                      snapshot.data.docs.map((book) {
+                    return Book.fromDocument(book);
+                  }).where((book) {
+                    //only give us books that are being read, currently!
+                    return (book.startedReading == null) &&
+                        (book.finishedReading == null) &&
+                        (book.userId == user.uid);
+                  });
+                  return userBookFilteredReadingListStream.isNotEmpty
+                      ? ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: createBookCards(
+                              userBookFilteredReadingListStream.toList(),
+                              context,
+                              user))
+                      : Center(
+                          child: Text(
+                            'Your book list is empty.  Add a book to get started.',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        );
+                },
+              ),
+            )
+          ],
         ));
   }
 
-  List<Widget> createBookCards(List<Book> books, BuildContext context) {
+  List<Widget> createBookCards(
+      List<Book> books, BuildContext context, User user) {
     List<Widget> children = [];
     for (var book in books) {
       children.add(

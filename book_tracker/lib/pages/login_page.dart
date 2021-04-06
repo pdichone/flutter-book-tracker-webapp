@@ -15,6 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   bool isCreateAccountClicked = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -43,9 +45,11 @@ class _LoginPageState extends State<LoginPage> {
                   height: 300,
                   child: isCreateAccountClicked != true
                       ? LoginForm(
+                          formKey: _formKey,
                           emailTextController: _emailTextController,
                           passwordTextController: _passwordTextController)
                       : CreateAccountForm(
+                          formKey: _formKey,
                           emailTextController: _emailTextController,
                           passwordTextController: _passwordTextController,
                         ),
@@ -68,12 +72,6 @@ class _LoginPageState extends State<LoginPage> {
                       } else
                         isCreateAccountClicked = false;
                     });
-
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => CreateAccountPage(),
-                    //     ));
                   },
                 ),
               ],
@@ -88,4 +86,11 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
+
+bool isValidEmail(String email) {
+  //source: https://stackoverflow.com/questions/16800540/validate-email-address-in-dart
+  return RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(email);
 }

@@ -14,9 +14,11 @@ class Book {
   final Timestamp startedReading;
   final Timestamp finishedReading;
   final String id;
+  final String userId;
 
   Book(
       {this.id,
+      this.userId,
       @required this.title,
       @required this.author,
       this.notes,
@@ -32,6 +34,7 @@ class Book {
   factory Book.fromDocument(QueryDocumentSnapshot data) {
     return Book(
         id: data.id,
+        userId: data.data()['user_id'],
         title: data.data()['title'],
         author: data.data()['author'],
         notes: data.data()['notes'],
@@ -56,6 +59,7 @@ class Book {
   Map<String, dynamic> toMap() {
     return {
       'title': title,
+      'user_id': userId,
       'author': author,
       'notes': notes,
       'photo_url': photoUrl,

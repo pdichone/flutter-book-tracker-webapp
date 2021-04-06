@@ -1,4 +1,5 @@
 import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -7,22 +8,29 @@ class LoginForm extends StatelessWidget {
     Key key,
     @required TextEditingController emailTextController,
     @required TextEditingController passwordTextController,
+    @required Key formKey,
   })  : _emailTextController = emailTextController,
         _passwordTextController = passwordTextController,
+        _globalKey = formKey,
         super(key: key);
 
   final TextEditingController _emailTextController;
   final TextEditingController _passwordTextController;
+  final GlobalKey<FormState> _globalKey;
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _globalKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
+              validator: (value) {
+                return value.isEmpty ? 'Please add an email' : null;
+              },
               controller: _emailTextController,
               decoration: buildInputDecoration('Email', 'gina@google.com'),
             ),
@@ -30,6 +38,9 @@ class LoginForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
+              validator: (value) {
+                return value.isEmpty ? 'Enter a password' : null;
+              },
               obscureText: true, //it's a password :)
               controller: _passwordTextController,
               decoration: buildInputDecoration("Password", ''),
@@ -48,7 +59,27 @@ class LoginForm extends StatelessWidget {
                 textStyle: TextStyle(fontSize: 18),
                 onSurface: Colors.grey,
               ),
-              onPressed: () {},
+              onPressed: () {
+                if (_globalKey.currentState.validate()) {
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                      .then((value) {
+                    return Navigator.of(context).pushNamed('/main');
+                  }).catchError((onError) {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Oops!'),
+                          content: Text('${onError.message}'),
+                        );
+                      },
+                    );
+                  });
+                }
+              },
               child: Text('Sign In')),
         ],
       ),

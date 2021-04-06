@@ -1,6 +1,12 @@
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/page_zones/main_page.dart';
 import 'package:book_tracker/pages/book_details_page.dart';
+import 'package:book_tracker/widgets/create_profile.dart';
+import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:book_tracker/widgets/update_user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +24,10 @@ class RightMainBody extends StatelessWidget {
     final _books = Provider.of<List<Book>>(context);
     final _collectionReference = Provider.of<CollectionReference>(context);
 
+    final authUser = Provider.of<User>(context);
+
+    final userCollectionLink = FirebaseFirestore.instance.collection('users');
+
     return StreamBuilder<QuerySnapshot>(
       stream: _collectionReference.snapshots(),
       builder: (context, snapshot) {
@@ -33,7 +43,8 @@ class RightMainBody extends StatelessWidget {
         }).where((book) {
           //only give us books that are being read, currently!
           return (book.startedReading != null) &&
-              (book.finishedReading != null);
+              (book.finishedReading != null) &&
+              (book.userId == authUser.uid);
         }).toList();
         return Expanded(
             flex: 2,
@@ -49,58 +60,30 @@ class RightMainBody extends StatelessWidget {
                   ),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: NetworkImage(
-                          'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='),
-                      radius: 50,
-                    ),
-                  ),
-                  Text(
-                    'Danny Devoe',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Business Analyst & Reader',
-                      style: Theme.of(context).textTheme.overline,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    height: 2,
-                    child: Container(
-                      color: Colors.red,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(48.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2,
-                              color: Colors.blueGrey.shade100,
-                            ),
-                            color: HexColor('#f1f3f6'),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            )),
-                        child: Center(
-                            child: Text(
-                          'Favorite Book Quote : Life is great when you\'re not hungry...',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        )),
-                      ),
-                    ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: userCollectionLink.snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+
+                      //Filter read books only!
+                      final usersListStream = snapshot.data.docs.map((mUser) {
+                        // print("===> ${mUser.id} currAuth: ${authUser.uid}");
+                        return MUser.fromDocument(mUser);
+                      }).where((element) {
+                        return (element.uid ==
+                            authUser
+                                .uid); //authuser must match one user in the list of users!
+                      }).toList();
+
+                      return usersListStream.isNotEmpty
+                          ? SizedBox(
+                              child: createProfile(
+                                  context, usersListStream, authUser),
+                            )
+                          : Text('Nope');
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -132,21 +115,26 @@ class RightMainBody extends StatelessWidget {
                                 subtitle: Text(
                                     'By: ${userBookFilteredReadListStream[index].author}'),
                                 leading: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: HexColor('#5d48b6'),
-                                      //border: Border.all(width: 5),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(5))),
-                                  child: Center(
-                                      child: Text(
-                                    '89%',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontStyle: FontStyle.italic),
-                                  )),
-                                ),
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        // color: HexColor('#5d48b6'),
+                                        //border: Border.all(width: 5),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      backgroundImage: NetworkImage(
+                                        (userBookFilteredReadListStream[index]
+                                                    .photoUrl ==
+                                                null)
+                                            ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
+                                            : userBookFilteredReadListStream[
+                                                    index]
+                                                .photoUrl,
+                                      ),
+                                      radius: 50,
+                                    )),
                                 trailing: Icon((Icons.more_vert)),
                                 onTap: () {
                                   //Go to book details on click

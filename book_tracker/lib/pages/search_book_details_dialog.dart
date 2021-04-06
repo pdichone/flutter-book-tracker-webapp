@@ -1,6 +1,8 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SearchedBookDetailDialog extends StatelessWidget {
   const SearchedBookDetailDialog({
@@ -15,6 +17,7 @@ class SearchedBookDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return AlertDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -24,7 +27,7 @@ class SearchedBookDetailDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage('https://picsum.photos/900/600'),
+                backgroundImage: NetworkImage('${book.photoUrl}'),
                 radius: 50,
               ),
             ),
@@ -49,20 +52,23 @@ class SearchedBookDetailDialog extends StatelessWidget {
           ),
           Text('Author: ${book.author}'),
           Text('Published: ${book.publishedDate}'),
-          Container(
-            margin: const EdgeInsets.all(10),
-            width: MediaQuery.of(context).size.width * 0.5,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey.shade100, width: 1)),
-            child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${book.description}',
-                    style: TextStyle(wordSpacing: 0.8, letterSpacing: 2),
-                  ),
-                )),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(10),
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: BoxDecoration(
+                  border:
+                      Border.all(color: Colors.blueGrey.shade100, width: 1)),
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${book.description}',
+                      style: TextStyle(wordSpacing: 0.8, letterSpacing: 2),
+                    ),
+                  )),
+            ),
           )
         ],
       ),
@@ -80,6 +86,7 @@ class SearchedBookDetailDialog extends StatelessWidget {
             onPressed: () {
               //save this new book to the list
               _collectionReference.add(Book(
+                      userId: user.uid,
                       title: book.title,
                       author: book.author,
                       photoUrl: book.photoUrl,
@@ -88,6 +95,10 @@ class SearchedBookDetailDialog extends StatelessWidget {
                       pageCount: book.pageCount,
                       categories: book.categories)
                   .toMap());
+
+              //Navigator.of(context).pop();
+              //Navigator.pushNamed(context, '/main');
+
               Navigator.of(context).pop();
             },
             child: Text('Save this Book')),

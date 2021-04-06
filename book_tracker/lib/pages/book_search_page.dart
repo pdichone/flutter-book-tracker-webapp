@@ -5,6 +5,7 @@ import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/pages/search_book_details_dialog.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -31,14 +32,12 @@ class _BookSearchPageState extends State<BookSearchPage> {
   Future<List<Book>> fetchBooks(String query) async {
     List<Book> books = [];
     http.Response response = await http.get(Uri.parse(searchQuery(query)));
-    String test = response.request.url.toString();
-    print(test);
 
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
       //var list = body['items'];
       final Iterable list = body['items'];
-      print('Items ==> ${list.toString()}');
+      // print('Items ==> ${list.toString()}');
 
       for (var item in list) {
         String title = item['volumeInfo']['title'];
@@ -77,7 +76,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
 
         books.add(searchBook);
       }
-      print('Size ==> ${books.length}');
+      // print('Size ==> ${books.length}');
     } else {
       throw ('error ${response.reasonPhrase}');
     }
@@ -93,13 +92,13 @@ class _BookSearchPageState extends State<BookSearchPage> {
         foregroundColor: Colors.red,
         backgroundColor: Colors.blueGrey.shade200,
       ),
-      body: Center(
-        child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: Column(children: [
-              Container(
-                child: Material(
-                  elevation: 2,
+      body: Material(
+        elevation: 2,
+        child: Center(
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: Column(children: [
+                Container(
                   child: Padding(
                     padding: const EdgeInsets.all(19),
                     child: Padding(
@@ -117,31 +116,31 @@ class _BookSearchPageState extends State<BookSearchPage> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              (listOfBooks != null)
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            width: 300,
-                            height: 200,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: createBookCards(listOfBooks, context),
+                SizedBox(
+                  height: 10,
+                ),
+                (listOfBooks != null)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              width: 300,
+                              height: 200,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: createBookCards(listOfBooks, context),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  : Center(
-                      child: Text('No books found'),
-                    )
-            ])),
+                        ],
+                      )
+                    : Center(
+                        child: Text('No books found'),
+                      )
+              ])),
+        ),
       ),
     );
   }
@@ -181,9 +180,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
                   //'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80',
                   (book.photoUrl == null || book.photoUrl.isEmpty)
                       ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
-                      //: book.photoUrl,
-                      : 'https://picsum.photos/900/600',
-                  //fit: BoxFit.cover,
+                      : book.photoUrl,
+
                   height: 100,
                   width: 160,
                 ),
@@ -195,10 +193,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: Text(
-                    '${book.author}',
-                    // overflow: TextOverflow.ellipsis
-                  ),
+                  subtitle:
+                      Text('${book.author}', overflow: TextOverflow.ellipsis),
                   onTap: () {
                     //show book details popup
                     showDialog(
@@ -209,13 +205,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
                             collectionReference: _collectionReference);
                       },
                     );
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => BookDetailsPage(
-                    //         book: book,
-                    //       ),
-                    //     ));
                   },
                 )
               ],

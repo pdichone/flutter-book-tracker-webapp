@@ -1,6 +1,7 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,8 @@ class AddBookManually extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _collectionReference = Provider.of<CollectionReference>(context);
+    final user = Provider.of<User>(context);
+
     return TextButton.icon(
       style: ButtonStyle(),
       icon: Icon(Icons.add),
@@ -77,6 +80,7 @@ class AddBookManually extends StatelessWidget {
                           ),
                           onPressed: () {
                             _collectionReference.add(Book(
+                                    userId: user.uid,
                                     title: _titleTextController.text,
                                     author: _authorTextController.text,
                                     photoUrl: _photoTextController.text)
