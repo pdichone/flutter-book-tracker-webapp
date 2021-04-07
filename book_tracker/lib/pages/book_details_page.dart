@@ -86,57 +86,59 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                     SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        TextButton.icon(
-                            onPressed: widget.book.startedReading == null
-                                ? () {
-                                    //capture the timestamp (date) and update startDate field
-                                    setState(() {
-                                      if (isReadingClicked == false) {
-                                        isReadingClicked = true;
-                                      } else {
-                                        isReadingClicked = false;
-                                      }
-                                    });
-                                  }
-                                : null,
-                            icon: Icon(Icons.book_sharp),
-                            label: (widget.book.startedReading == null)
-                                ? (!isReadingClicked)
-                                    ? Text('Start Reading this Book')
-                                    : Text(
-                                        'Started Reading...',
-                                        style: TextStyle(
-                                            color: Colors.grey.shade300),
-                                      )
-                                : Text(
-                                    "Started on: ${formattDate(widget.book.startedReading)}")),
-                        TextButton.icon(
-                            onPressed: widget.book.finishedReading == null
-                                ? () {
-                                    //capture the timestamp (date) and update endDate field
-                                    setState(() {
-                                      if (isFinishedRadingClicked == false) {
-                                        isFinishedRadingClicked = true;
-                                      } else {
-                                        isFinishedRadingClicked = false;
-                                      }
-                                    });
-                                  }
-                                : null,
-                            icon: Icon(Icons.add),
-                            label: (widget.book.finishedReading == null)
-                                ? (!isFinishedRadingClicked)
-                                    ? Text(
-                                        'Mark as Read',
-                                      )
-                                    : Text('Finished Reading!',
-                                        style: TextStyle(color: Colors.grey))
-                                : Text(
-                                    "Finished on ${formattDate(widget.book.finishedReading)}")),
-                      ],
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          TextButton.icon(
+                              onPressed: widget.book.startedReading == null
+                                  ? () {
+                                      //capture the timestamp (date) and update startDate field
+                                      setState(() {
+                                        if (isReadingClicked == false) {
+                                          isReadingClicked = true;
+                                        } else {
+                                          isReadingClicked = false;
+                                        }
+                                      });
+                                    }
+                                  : null,
+                              icon: Icon(Icons.book_sharp),
+                              label: (widget.book.startedReading == null)
+                                  ? (!isReadingClicked)
+                                      ? Text('Start Reading this Book')
+                                      : Text(
+                                          'Started Reading...',
+                                          style: TextStyle(
+                                              color: Colors.grey.shade300),
+                                        )
+                                  : Text(
+                                      "Started on: ${formattDate(widget.book.startedReading)}")),
+                          TextButton.icon(
+                              onPressed: widget.book.finishedReading == null
+                                  ? () {
+                                      //capture the timestamp (date) and update endDate field
+                                      setState(() {
+                                        if (isFinishedRadingClicked == false) {
+                                          isFinishedRadingClicked = true;
+                                        } else {
+                                          isFinishedRadingClicked = false;
+                                        }
+                                      });
+                                    }
+                                  : null,
+                              icon: Icon(Icons.add),
+                              label: (widget.book.finishedReading == null)
+                                  ? (!isFinishedRadingClicked)
+                                      ? Text(
+                                          'Mark as Read',
+                                        )
+                                      : Text('Finished Reading!',
+                                          style: TextStyle(color: Colors.grey))
+                                  : Text(
+                                      "Finished on ${formattDate(widget.book.finishedReading)}")),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -203,9 +205,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                               Navigator.of(context).pop();
                             },
                             child: Text('Update')),
-                        IconButton(
-                            color: Colors.red,
-                            icon: Icon(Icons.delete_forever),
+                        TextButton.icon(
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -239,7 +239,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                   );
                                 },
                               );
-                            })
+                            },
+                            icon: Icon(Icons.delete_forever),
+                            label: Text('Delete')),
                       ],
                     ),
                   ],
@@ -251,8 +253,4 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
       ),
     );
   }
-
-  // String formattDate(Timestamp timestamp) {
-  //   return DateFormat.yMMMd().format(timestamp.toDate());
-  // }
 }
