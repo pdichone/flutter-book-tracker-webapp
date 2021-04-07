@@ -1,7 +1,6 @@
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({
