@@ -1,4 +1,4 @@
-import 'package:book_tracker/pages/book_search_page.dart';
+import 'package:book_tracker/screens/book_search_page.dart';
 import 'package:flutter/material.dart';
 
 class AddBookBySearch extends StatelessWidget {

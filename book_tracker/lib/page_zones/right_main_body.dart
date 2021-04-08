@@ -1,6 +1,6 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
-import 'package:book_tracker/pages/book_details_page.dart';
+import 'package:book_tracker/screens/book_details_page.dart';
 import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +19,6 @@ class RightMainBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final _collectionReference = Provider.of<CollectionReference>(context);
 
     final authUser = Provider.of<User>(context);

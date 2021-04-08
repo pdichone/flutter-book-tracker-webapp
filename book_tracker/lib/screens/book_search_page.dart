@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/pages/search_book_details_dialog.dart';
+import 'package:book_tracker/screens/search_book_details_dialog.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/pages/book_details_page.dart';
+import 'package:book_tracker/screens/book_details_page.dart';
 import 'package:book_tracker/topnav/top_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
