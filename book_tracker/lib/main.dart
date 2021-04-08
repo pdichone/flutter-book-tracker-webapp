@@ -1,5 +1,5 @@
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/page_zones/main_page.dart';
+import 'package:book_tracker/widgets/main_page.dart';
 import 'package:book_tracker/screens/getting_started_page.dart';
 import 'package:book_tracker/screens/login_page.dart';
 import 'package:book_tracker/screens/not_found_page.dart';

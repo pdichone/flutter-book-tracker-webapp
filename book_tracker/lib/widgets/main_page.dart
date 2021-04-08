@@ -1,6 +1,6 @@
-import 'package:book_tracker/page_zones/left_main_menu.dart';
-import 'package:book_tracker/page_zones/main_body_dashboard.dart';
-import 'package:book_tracker/page_zones/right_main_body.dart';
+import 'package:book_tracker/widgets/left_main_menu.dart';
+import 'package:book_tracker/widgets/main_body_dashboard.dart';
+import 'package:book_tracker/widgets/right_main_body.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 

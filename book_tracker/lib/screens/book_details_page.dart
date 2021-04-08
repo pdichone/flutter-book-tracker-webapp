@@ -1,5 +1,5 @@
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/page_zones/main_page.dart';
+import 'package:book_tracker/widgets/main_page.dart';
 import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
