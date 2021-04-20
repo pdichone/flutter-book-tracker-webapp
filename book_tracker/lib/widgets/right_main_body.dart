@@ -64,7 +64,7 @@ class RightMainBody extends StatelessWidget {
                         return CircularProgressIndicator();
                       }
 
-                      //Filter read books only!
+                      //Filter current user only!
                       final usersListStream = snapshot.data.docs.map((mUser) {
                         // print("===> ${mUser.id} currAuth: ${authUser.uid}");
                         return MUser.fromDocument(mUser);

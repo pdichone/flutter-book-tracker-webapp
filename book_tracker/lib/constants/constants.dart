@@ -1,7 +1,7 @@
-const String apiKey = 'AIzaSyDSZ_I5i3mQytndsISR7nacelTltWSWN_s';
+const String apiKey = 'Your_API_KEY';
 const String maxResult = "30";
 const String apiUrl =
-    'https://www.googleapis.com/books/v1/volumes?q=tarrega&key=AIzaSyDSZ_I5i3mQytndsISR7nacelTltWSWN_s';
+    'https://www.googleapis.com/books/v1/volumes?q=tarrega&key=YOUR_API_KEY';
 
 String searchQuery(String searchTerms) {
   String urlLeft = 'https://www.googleapis.com/books/v1/volumes?q=';

@@ -21,7 +21,7 @@ void main() {
 Deployment: use flutter build web --web-renderer html to render html for images to work!
  To see images
         or... run in: flutter run -d chrome --web-renderer html
-        or.. change luancher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
+        or.. change launcher.json:https://github.com/LunaGao/flag_flutter/issues/49#issuecomment-803008314
         to render images run web-renderer: https://stackoverflow.com/questions/66060984/flutter-web-image-loading-in-mobile-view-but-not-in-full-view */
 
 class MyApp extends StatelessWidget {

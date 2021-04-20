@@ -34,43 +34,6 @@ class LeftMainMenu extends StatelessWidget {
             ),
           ),
           Spacer(),
-          // Padding(
-          //   padding: const EdgeInsets.all(18.0),
-          //   child: IconButton(
-          //     color: HexColor('#69639F'),
-          //     hoverColor: Colors.red,
-          //     icon: Icon(Icons.list_alt_rounded),
-          //     onPressed: () {},
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(18.0),
-          //   child: IconButton(
-          //     color: HexColor('#69639F'),
-          //     hoverColor: Colors.red,
-          //     icon: Icon(Icons.dashboard),
-          //     onPressed: () {},
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(18.0),
-          //   child: IconButton(
-          //     color: HexColor('#69639F'),
-          //     hoverColor: Colors.red,
-          //     icon: Icon(Icons.person),
-          //     onPressed: () {},
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(18.0),
-          //   child: IconButton(
-          //     color: HexColor('#69639F'),
-          //     hoverColor: Colors.red,
-          //     icon: Icon(Icons.stacked_line_chart_sharp),
-          //     onPressed: () {},
-          //   ),
-          // ),
-          // Spacer()
         ],
       ),
     );
