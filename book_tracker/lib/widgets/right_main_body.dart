@@ -1,6 +1,7 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/screens/book_details_page.dart';
+import 'package:book_tracker/utils/responsive_layout.dart';
 import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +39,6 @@ class RightMainBody extends StatelessWidget {
         final userBookFilteredReadListStream = snapshot.data.docs.map((book) {
           return Book.fromDocument(book);
         }).where((book) {
-          //only give us books that are being read, currently!
           return (book.startedReading != null) &&
               (book.finishedReading != null) &&
               (book.userId == authUser.uid);
@@ -99,61 +99,176 @@ class RightMainBody extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                          itemCount: userBookFilteredReadListStream
-                              .length, //_books.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              child: ListTile(
-                                tileColor: HexColor('#f1f3f6'),
-                                title: Text(
-                                    '${userBookFilteredReadListStream[index].title}'),
-                                // title: Text('${books[index]}'),
-                                subtitle: Text(
-                                    'By: ${userBookFilteredReadListStream[index].author}'),
+                      child: Responsive(
+                        mobile: ListView.builder(
+                            itemCount: userBookFilteredReadListStream
+                                .length, //_books.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: ListTile(
+                                  tileColor: HexColor('#f1f3f6'),
+                                  title: Text(
+                                      '${userBookFilteredReadListStream[index].title}'),
+                                  // title: Text('${books[index]}'),
+                                  subtitle: Text(
+                                      'By: ${userBookFilteredReadListStream[index].author}'),
 
-                                leading: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5))),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: NetworkImage(
-                                        (userBookFilteredReadListStream[index]
-                                                    .photoUrl ==
-                                                null)
-                                            ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
-                                            : userBookFilteredReadListStream[
-                                                    index]
-                                                .photoUrl,
-                                      ),
-                                      radius: 50,
-                                    )),
-                                trailing: Column(children: [
-                                  Text(
-                                    'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 13),
-                                  ),
-                                  Icon((Icons.more_horiz_outlined))
-                                ]),
-                                onTap: () {
-                                  //Go to book details on click
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BookDetailsPage(
-                                          book: userBookFilteredReadListStream[
-                                              index],
+                                  leading: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5))),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: NetworkImage(
+                                          (userBookFilteredReadListStream[index]
+                                                      .photoUrl ==
+                                                  null)
+                                              ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
+                                              : userBookFilteredReadListStream[
+                                                      index]
+                                                  .photoUrl,
                                         ),
-                                      ));
-                                },
-                              ),
-                            );
-                          }),
+                                        radius: 50,
+                                      )),
+                                  trailing: Column(children: [
+                                    Text(
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 13),
+                                    ),
+                                    Icon((Icons.more_horiz_outlined))
+                                  ]),
+                                  onTap: () {
+                                    //Go to book details on click
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BookDetailsPage(
+                                            book:
+                                                userBookFilteredReadListStream[
+                                                    index],
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              );
+                            }),
+                        desktop: ListView.builder(
+                            itemCount: userBookFilteredReadListStream
+                                .length, //_books.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: ListTile(
+                                  tileColor: HexColor('#f1f3f6'),
+                                  title: Text(
+                                      '${userBookFilteredReadListStream[index].title}'),
+                                  // title: Text('${books[index]}'),
+                                  subtitle: Text(
+                                      'By: ${userBookFilteredReadListStream[index].author}'),
+
+                                  leading: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5))),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: NetworkImage(
+                                          (userBookFilteredReadListStream[index]
+                                                      .photoUrl ==
+                                                  null)
+                                              ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
+                                              : userBookFilteredReadListStream[
+                                                      index]
+                                                  .photoUrl,
+                                        ),
+                                        radius: 50,
+                                      )),
+                                  trailing: Column(children: [
+                                    Text(
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 13),
+                                    ),
+                                    Icon((Icons.more_horiz_outlined))
+                                  ]),
+                                  onTap: () {
+                                    //Go to book details on click
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BookDetailsPage(
+                                            book:
+                                                userBookFilteredReadListStream[
+                                                    index],
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              );
+                            }),
+                        tablet: ListView.builder(
+                            itemCount: userBookFilteredReadListStream
+                                .length, //_books.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: ListTile(
+                                  tileColor: HexColor('#f1f3f6'),
+                                  title: Text(
+                                      '${userBookFilteredReadListStream[index].title}'),
+                                  // title: Text('${books[index]}'),
+                                  subtitle: Text(
+                                      'By: ${userBookFilteredReadListStream[index].author}'),
+
+                                  leading: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5))),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: NetworkImage(
+                                          (userBookFilteredReadListStream[index]
+                                                      .photoUrl ==
+                                                  null)
+                                              ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
+                                              : userBookFilteredReadListStream[
+                                                      index]
+                                                  .photoUrl,
+                                        ),
+                                        radius: 50,
+                                      )),
+                                  trailing: Column(children: [
+                                    Text(
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 13),
+                                    ),
+                                    Icon((Icons.more_horiz_outlined))
+                                  ]),
+                                  onTap: () {
+                                    //Go to book details on click
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BookDetailsPage(
+                                            book:
+                                                userBookFilteredReadListStream[
+                                                    index],
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              );
+                            }),
+                      ),
                     ),
                   ),
                 ],

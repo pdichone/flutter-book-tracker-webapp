@@ -28,50 +28,52 @@ class UpdateUserProfile extends StatelessWidget {
     return AlertDialog(
       title: Text('Edit ${user.displayName}'),
       content: Form(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              backgroundImage: NetworkImage('${user.avatarUrl}'),
-              radius: 50,
+          child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage('${user.avatarUrl}'),
+                radius: 50,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextFormField(
-              controller: _displayNameTextController,
-              decoration: buildInputDecoration('Your name', ''),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: _displayNameTextController,
+                decoration: buildInputDecoration('Your name', ''),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextFormField(
-              controller: _professionTextController,
-              decoration: buildInputDecoration("Profession", ''),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: _professionTextController,
+                decoration: buildInputDecoration("Profession", ''),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextFormField(
-              controller: _quoteTextController,
-              decoration: buildInputDecoration("Your favorite quote", ''),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: _quoteTextController,
+                decoration: buildInputDecoration("Your favorite quote", ''),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextFormField(
-              controller: _avatarTextController,
-              decoration: buildInputDecoration("Avatar url", ''),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: _avatarTextController,
+                decoration: buildInputDecoration("Avatar url", ''),
+              ),
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ],
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       )),
       actions: [
         TextButton(

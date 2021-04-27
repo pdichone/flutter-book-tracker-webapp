@@ -33,8 +33,8 @@ class GettingStartedPage extends StatelessWidget {
                 height: 50,
               ),
               Container(
-                width: 220,
-                height: 40,
+                width: MediaQuery.of(context).size.width * 0.90,
+                height: MediaQuery.of(context).size.width * 0.10,
                 child: TextButton.icon(
                   label: Text('Sign in to Get Started'),
                   icon: Icon(Icons.login_rounded),
@@ -45,8 +45,6 @@ class GettingStartedPage extends StatelessWidget {
                     onSurface: Colors.grey,
                   ),
                   onPressed: () {
-                    //open login page
-                    //open login page
                     Navigator.push(
                         context,
                         MaterialPageRoute(

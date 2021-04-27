@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/services/create_user.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +22,7 @@ class CreateAccountForm extends StatelessWidget {
         super(key: key);
   @override
   Widget build(BuildContext context) {
+    var isMobile = Platform.isIOS || Platform.isAndroid;
     return Form(
       key: _globalKey,
       child: Column(
@@ -79,8 +83,16 @@ class CreateAccountForm extends StatelessWidget {
                             .signInWithEmailAndPassword(
                                 email: email,
                                 password: _passwordTextController.text)
-                            .then((value) =>
-                                Navigator.of(context).pushNamed('/main'));
+                            .then((value) {
+                          isMobile
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MobileMainScreen()),
+                                )
+                              : Navigator.of(context).pushNamed('/main');
+                          // return Navigator.of(context).pushNamed('/main');
+                        });
                       });
                     }
 

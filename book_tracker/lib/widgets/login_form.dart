@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +22,7 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isMobile = Platform.isIOS || Platform.isAndroid;
     return Form(
       key: _globalKey,
       child: Column(
@@ -65,7 +69,13 @@ class LoginForm extends StatelessWidget {
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
-                    return Navigator.of(context).pushNamed('/main');
+                    isMobile
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MobileMainScreen()),
+                          )
+                        : Navigator.of(context).pushNamed('/main');
                   }).catchError((onError) {
                     return showDialog(
                       context: context,

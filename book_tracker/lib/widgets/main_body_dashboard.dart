@@ -110,12 +110,11 @@ class MainBodyDashboard extends StatelessWidget {
                     );
                   }
                   //Filter to show only books that haven't been started and finished
-                  //Filter 'reading' books!!
+
                   final userBookFilteredReadingListStream =
                       snapshot.data.docs.map((book) {
                     return Book.fromDocument(book);
                   }).where((book) {
-                    //only give us books that are being read, currently!
                     return (book.startedReading == null) &&
                         (book.finishedReading == null) &&
                         (book.userId == user.uid);

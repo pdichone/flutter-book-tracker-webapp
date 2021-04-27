@@ -1,4 +1,12 @@
+import 'dart:io';
+
+import 'package:book_tracker/constants/constants.dart';
+import 'package:book_tracker/mobile/screens/mobile_book_details.dart';
+import 'package:book_tracker/mobile/screens/mobile_book_search.dart';
+import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
+import 'package:book_tracker/mobile/widgets/reading_card_list.dart';
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/screens/book_search_page.dart';
 import 'package:book_tracker/widgets/main_page.dart';
 import 'package:book_tracker/screens/getting_started_page.dart';
 import 'package:book_tracker/screens/login_page.dart';
@@ -6,13 +14,51 @@ import 'package:book_tracker/screens/not_found_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
-  runApp(MyApp());
+  runApp((kIsWeb)
+      ? MyApp()
+      : (Platform.isIOS || Platform.isAndroid)
+          ? MobileApp()
+          : MyApp());
+}
+
+class MobileApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        StreamProvider<User>(
+            create: (context) => FirebaseAuth.instance.authStateChanges(),
+            initialData: null),
+      ],
+      child: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Firebase not working!');
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            var user = Provider.of<User>(context);
+            //print('loggedin user ==> ${user.email}');
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: '',
+
+              home: user == null ? GettingStartedPage() : MobileMainScreen(),
+              //home: MobileMainScreen(),
+            );
+          }
+          return CircularProgressIndicator();
+        },
+      ),
+    );
+  }
 }
 
 /* 
