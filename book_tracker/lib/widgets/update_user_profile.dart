@@ -1,3 +1,5 @@
+import 'package:book_tracker/constants/constants.dart';
+import 'package:book_tracker/mobile/widgets/two_sided_rounded_button.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +28,7 @@ class UpdateUserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Edit ${user.displayName}'),
+      title: Center(child: Text('Edit ${user.displayName}')),
       content: Form(
           child: SingleChildScrollView(
         child: Column(
@@ -76,8 +78,13 @@ class UpdateUserProfile extends StatelessWidget {
         ),
       )),
       actions: [
-        TextButton(
-            onPressed: () {
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: TwoSideRoundedButton(
+            color: kButtonColor,
+            radious: 12,
+            text: 'Update',
+            press: () {
               // Only update if new data was entered
               final userChangedName =
                   user.displayName != _displayNameTextController.text;
@@ -109,12 +116,25 @@ class UpdateUserProfile extends StatelessWidget {
 
               Navigator.of(context).pop();
             },
-            child: Text('Update')),
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Cancel'))
+          ),
+        ),
+        // TextButton(
+        //     onPressed: () {
+
+        //     },
+        //     child: Text('Update')),
+
+        TwoSideRoundedButton(
+          color: kButtonColor,
+          text: 'Cancel',
+          radious: 12,
+          press: () => Navigator.of(context).pop(),
+        ),
+        // TextButton(
+        //     onPressed: () {
+        //       Navigator.of(context).pop();
+        //     },
+        //     child: Text('Cancel'))
       ],
     );
   }

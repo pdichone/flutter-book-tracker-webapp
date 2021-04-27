@@ -1,3 +1,4 @@
+import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/main.dart';
 import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/mobile/widgets/two_sided_rounded_button.dart';
@@ -42,20 +43,38 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
         TextEditingController(text: widget.book.notes);
     return AlertDialog(
       title: Column(mainAxisSize: MainAxisSize.max, children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            backgroundImage: NetworkImage('${widget.book.photoUrl}'),
-            radius: 50,
-          ),
+        Row(
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage('${widget.book.photoUrl}'),
+                radius: 50,
+              ),
+            ),
+            Spacer(),
+            Container(
+              margin: const EdgeInsets.only(bottom: 103),
+              child: TextButton.icon(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(
+                    Icons.close,
+                    color: kButtonColor,
+                  ),
+                  label: Text('')),
+            )
+          ],
         ),
         Text('${widget.book.author}'),
       ]),
       content: Form(
           child: SingleChildScrollView(
         child: Container(
-          color: Colors.blueGrey.shade100,
+          color: Colors.blueGrey.withAlpha(18),
           child: Column(
             children: [
               Padding(
@@ -100,7 +119,7 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                   icon: Icon(Icons.book_sharp),
                   label: (widget.book.startedReading == null)
                       ? (!isReadingClicked)
-                          ? Text('Start Reading this Book')
+                          ? Text('Start Reading')
                           : Text(
                               'Started Reading...',
                               style: TextStyle(color: Colors.grey.shade300),
@@ -120,7 +139,10 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                           });
                         }
                       : null,
-                  icon: Icon(Icons.add),
+                  icon: Icon(
+                    Icons.done,
+                    color: Colors.greenAccent,
+                  ),
                   label: (widget.book.finishedReading == null)
                       ? (!isFinishedRadingClicked)
                           ? Text(
@@ -176,7 +198,7 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
               Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: TextFormField(
-                    maxLines: 5,
+                    maxLines: 2,
                     controller: _notesTextController,
                     decoration:
                         buildInputDecoration("Your thoughts", 'Enter notes'),
@@ -184,59 +206,52 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        primary: Colors.white,
-                        padding: EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
-                        backgroundColor: Colors.amber,
-                        textStyle: TextStyle(fontSize: 18),
-                        onSurface: Colors.grey,
-                      ),
-                      onPressed: () {
-                        // Only update if new data was entered
-                        final userChangedTitle =
-                            widget.book.title != _titleTextController.text;
-                        final userChangedAuthor =
-                            widget.book.author != _authorTextController.text;
-                        final userChangedPhotoUrl =
-                            widget.book.author != _photoTextController.text;
+                  TwoSideRoundedButton(
+                    text: 'Update',
+                    radious: 12,
+                    color: kIconColor,
+                    press: () {
+                      // Only update if new data was entered
+                      final userChangedTitle =
+                          widget.book.title != _titleTextController.text;
+                      final userChangedAuthor =
+                          widget.book.author != _authorTextController.text;
+                      final userChangedPhotoUrl =
+                          widget.book.author != _photoTextController.text;
 
-                        final userChangedNotes =
-                            widget.book.notes != _notesTextController.text;
+                      final userChangedNotes =
+                          widget.book.notes != _notesTextController.text;
 
-                        final userChangedRating = widget.book.rating != _rating;
+                      final userChangedRating = widget.book.rating != _rating;
 
-                        final bookUpdate = userChangedTitle ||
-                            userChangedRating ||
-                            userChangedAuthor ||
-                            userChangedPhotoUrl ||
-                            userChangedNotes;
+                      final bookUpdate = userChangedTitle ||
+                          userChangedRating ||
+                          userChangedAuthor ||
+                          userChangedPhotoUrl ||
+                          userChangedNotes;
 
-                        // print('user changed notes $userChangedNotes');
+                      // print('user changed notes $userChangedNotes');
 
-                        if (bookUpdate) {
-                          _linkCollection.doc(widget.book.id).update(Book(
-                                  userId: user.uid,
-                                  // userId: 'TNZUELU1YAV85ok7VpX6VGmTnmm2',
-                                  title: _titleTextController.text,
-                                  author: _authorTextController.text,
-                                  rating: _rating,
-                                  photoUrl: _photoTextController.text,
-                                  startedReading: isReadingClicked
-                                      ? Timestamp.now()
-                                      : widget.book.startedReading,
-                                  finishedReading: isFinishedRadingClicked
-                                      ? Timestamp.now()
-                                      : widget.book.finishedReading,
-                                  notes: _notesTextController.text)
-                              .toMap());
-                        }
+                      if (bookUpdate) {
+                        _linkCollection.doc(widget.book.id).update(Book(
+                                userId: user.uid,
+                                title: _titleTextController.text,
+                                author: _authorTextController.text,
+                                rating: _rating,
+                                photoUrl: _photoTextController.text,
+                                startedReading: isReadingClicked
+                                    ? Timestamp.now()
+                                    : widget.book.startedReading,
+                                finishedReading: isFinishedRadingClicked
+                                    ? Timestamp.now()
+                                    : widget.book.finishedReading,
+                                notes: _notesTextController.text)
+                            .toMap());
+                      }
 
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Update')),
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   TextButton.icon(
                       onPressed: () {
                         showDialog(
@@ -272,8 +287,14 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                           },
                         );
                       },
-                      icon: Icon(Icons.delete_forever),
-                      label: Text('Delete')),
+                      icon: Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                      label: Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.red),
+                      )),
                 ],
               ),
             ],

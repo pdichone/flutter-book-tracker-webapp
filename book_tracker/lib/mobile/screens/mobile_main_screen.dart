@@ -113,9 +113,9 @@ class MobileMainScreen extends StatelessWidget {
                     text: TextSpan(
                         style: Theme.of(context).textTheme.headline5,
                         children: [
-                          TextSpan(text: 'What you are \n reading '),
+                          TextSpan(text: 'Your reading\n activity '),
                           TextSpan(
-                              text: 'Right now...',
+                              text: 'right now...',
                               style: TextStyle(fontWeight: FontWeight.bold))
                         ]),
                   ),
@@ -150,8 +150,12 @@ class MobileMainScreen extends StatelessWidget {
               }).where((book) {
                 //only give us books from current User!
                 return (book.userId == user.uid) &&
-                    (book.startedReading != null);
+                    (book.startedReading != null &&
+                        book.finishedReading == null);
               }).toList();
+
+              // var sortedList = curUserBookList.w
+              //curUserBookList = curUserBookList.reversed.toList();
               return Expanded(
                 flex: 1,
                 child: ListView.builder(
@@ -168,30 +172,38 @@ class MobileMainScreen extends StatelessWidget {
                       btnText = 'Reading';
                     }
 
-                    return ReadingListCard(
-                      buttonText: btnText,
-                      rating: book.rating != null ? book.rating : 4.6,
-                      pressDetails: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => MobileBookDetailsPage(
-                            book: book,
-                          ),
-                        );
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => MobileBookDetailsPage(
-                        //             book: book,
-                        //           )),
-                        // );
-                      },
-                      pressRead: () {
-                        //print('Read');
-                      },
-                      auth: book.author,
-                      image: book.photoUrl,
-                      title: book.title,
+                    return InkWell(
+                      child: ReadingListCard(
+                        buttonText: btnText,
+                        rating: book.rating != null ? book.rating : 4.6,
+                        pressDetails: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => MobileBookDetailsPage(
+                              book: book,
+                            ),
+                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => MobileBookDetailsPage(
+                          //             book: book,
+                          //           )),
+                          // );
+                        },
+                        pressRead: () {
+                          //print('Read');
+                        },
+                        auth: book.author,
+                        image: book.photoUrl,
+                        title: book.title,
+                      ),
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => MobileBookDetailsPage(
+                          book: book,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -257,31 +269,39 @@ class MobileMainScreen extends StatelessWidget {
 
                     Book book = readingListBook[index];
 
-                    return ReadingListCard(
-                      buttonText: 'Not Started',
-                      rating: book.rating != null ? book.rating : 4.6,
-                      pressDetails: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => MobileBookDetailsPage(
-                            book: book,
-                          ),
-                        );
-                        // print(book.title);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => MobileBookDetailsPage(
-                        //             book: book,
-                        //           )),
-                        // );
-                      },
-                      pressRead: () {
-                        print('Read');
-                      },
-                      auth: book.author,
-                      image: book.photoUrl,
-                      title: book.title,
+                    return InkWell(
+                      child: ReadingListCard(
+                        buttonText: 'Not Started',
+                        rating: book.rating != null ? book.rating : 4.6,
+                        pressDetails: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => MobileBookDetailsPage(
+                              book: book,
+                            ),
+                          );
+                          // print(book.title);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => MobileBookDetailsPage(
+                          //             book: book,
+                          //           )),
+                          // );
+                        },
+                        pressRead: () {
+                          //print('Read');
+                        },
+                        auth: book.author,
+                        image: book.photoUrl,
+                        title: book.title,
+                      ),
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => MobileBookDetailsPage(
+                          book: book,
+                        ),
+                      ),
                     );
                   },
                 ),

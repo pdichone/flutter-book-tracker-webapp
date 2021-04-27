@@ -5,9 +5,11 @@ class TwoSideRoundedButton extends StatelessWidget {
   final String text;
   final double radious;
   final Function press;
+  final Color color;
   const TwoSideRoundedButton({
     Key key,
     this.text,
+    this.color = kBlackColor,
     this.radious = 29,
     this.press,
   }) : super(key: key);
@@ -20,7 +22,7 @@ class TwoSideRoundedButton extends StatelessWidget {
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: kBlackColor,
+          color: this.color,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(radious),
             bottomRight: Radius.circular(radious),
