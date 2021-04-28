@@ -1,8 +1,10 @@
+import 'package:book_tracker/mobile/widgets/two_sided_rounded_button.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:book_tracker/constants/constants.dart';
 
 class MobileSearchedBookDetailDialog extends StatelessWidget {
   const MobileSearchedBookDetailDialog({
@@ -73,50 +75,42 @@ class MobileSearchedBookDetailDialog extends StatelessWidget {
         ],
       ),
       actions: [
-        TextButton(
-            style: TextButton.styleFrom(
-              primary: Colors.white,
-              padding: EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-              backgroundColor: Colors.amber,
-              textStyle: TextStyle(fontSize: 18),
-              onSurface: Colors.grey,
-            ),
-            onPressed: () {
-              //save this new book to the list
-              _collectionReference.add(Book(
-                      userId: user.uid,
-                      // userId: '1Scrgn0JyiXqkzPRFmkHP9oBwB73',
-                      title: book.title,
-                      author: book.author,
-                      photoUrl: book.photoUrl,
-                      publishedDate: book.publishedDate,
-                      description: book.description,
-                      pageCount: book.pageCount,
-                      categories: book.categories)
-                  .toMap());
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: TwoSideRoundedButton(
+              color: kButtonColor,
+              radious: 12,
+              text: 'Save',
+              press: () {
+                //save this new book to the list
+                _collectionReference.add(Book(
+                        userId: user.uid,
+                        // userId: '1Scrgn0JyiXqkzPRFmkHP9oBwB73',
+                        title: book.title,
+                        author: book.author,
+                        photoUrl: book.photoUrl,
+                        publishedDate: book.publishedDate,
+                        description: book.description,
+                        pageCount: book.pageCount,
+                        categories: book.categories)
+                    .toMap());
 
-              //Navigator.of(context).pop();
-              //Navigator.pushNamed(context, '/main');
+                //Navigator.of(context).pop();
+                //Navigator.pushNamed(context, '/main');
 
-              Navigator.of(context).pop();
-            },
-            child: Text('Save this Book')),
-        TextButton(
-            style: TextButton.styleFrom(
-              primary: Colors.white,
-              padding: EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-              backgroundColor: Colors.amber,
-              textStyle: TextStyle(fontSize: 18),
-              onSurface: Colors.grey,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Cancel')),
+                Navigator.of(context).pop();
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: TwoSideRoundedButton(
+              color: kButtonColor,
+              radious: 12,
+              text: 'Cancel',
+              press: () {
+                Navigator.of(context).pop();
+              }),
+        )
       ],
     );
   }

@@ -175,7 +175,7 @@ class MobileMainScreen extends StatelessWidget {
                     return InkWell(
                       child: ReadingListCard(
                         buttonText: btnText,
-                        rating: book.rating != null ? book.rating : 4.6,
+                        rating: book.rating != null ? book.rating : 4,
                         pressDetails: () {
                           showDialog(
                             context: context,
@@ -272,7 +272,7 @@ class MobileMainScreen extends StatelessWidget {
                     return InkWell(
                       child: ReadingListCard(
                         buttonText: 'Not Started',
-                        rating: book.rating != null ? book.rating : 4.6,
+                        rating: book.rating != null ? book.rating : 4,
                         pressDetails: () {
                           showDialog(
                             context: context,

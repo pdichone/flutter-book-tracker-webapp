@@ -151,7 +151,7 @@ class RouteController extends StatelessWidget {
     } else if (settingsName == '/login' || notSignedInGotoMain) {
       return LoginPage();
     } else if (signedInGotoMain) {
-      return MainPage();
+      return MobileMainScreen();
     } else {
       return PageNotFound();
     }

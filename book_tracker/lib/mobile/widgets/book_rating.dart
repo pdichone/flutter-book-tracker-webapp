@@ -2,7 +2,7 @@ import 'package:book_tracker/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class BookRating extends StatelessWidget {
-  final double score;
+  final int score;
   const BookRating({
     Key key,
     this.score,

@@ -1,14 +1,14 @@
 import 'dart:ui';
 
 const String apiKey = 'AIzaSyDSZ_I5i3mQytndsISR7nacelTltWSWN_s';
-const String maxResult = "30";
+const String maxResult = "40"; // max is 40, default is 10
 const String apiUrl =
     'https://www.googleapis.com/books/v1/volumes?q=tarrega&key=AIzaSyDSZ_I5i3mQytndsISR7nacelTltWSWN_s';
 
 String searchQuery(String searchTerms) {
   String urlLeft = 'https://www.googleapis.com/books/v1/volumes?q=';
   String urlRight =
-      '&maxResults=$maxResult&orderBy=newest&langRestrict=en&key=$apiKey';
+      '&maxResults=$maxResult&orderBy=relevance&langRestrict=en&key=$apiKey'; //newest or relevance for orderBy
   return urlLeft + '$searchTerms' + urlRight;
 }
 

@@ -25,7 +25,7 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
   bool isReadingClicked = false;
   bool isFinishedRadingClicked = false;
 
-  double _rating;
+  int _rating;
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +188,7 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                 onRatingUpdate: (rating) {
                   print(rating);
                   setState(() {
-                    _rating = rating;
+                    _rating = rating.toInt();
                   });
                 },
               ),
@@ -440,7 +440,7 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                           onRatingUpdate: (rating) {
                             print(rating);
                             setState(() {
-                              _rating = rating;
+                              _rating = rating.toInt();
                             });
                           },
                         )
