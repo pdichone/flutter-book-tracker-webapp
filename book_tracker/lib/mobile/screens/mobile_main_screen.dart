@@ -153,7 +153,6 @@ class MobileMainScreen extends StatelessWidget {
                     (book.startedReading != null &&
                         book.finishedReading == null);
               }).toList();
-
               // var sortedList = curUserBookList.w
               //curUserBookList = curUserBookList.reversed.toList();
               return Expanded(
