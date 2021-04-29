@@ -18,9 +18,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   //runApp(MobileApp());
   runApp((kIsWeb) ? MyApp() : MobileApp());
 }
