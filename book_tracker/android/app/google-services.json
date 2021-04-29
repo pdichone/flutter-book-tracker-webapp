@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "890175583755",
+    "firebase_url": "https://booktrackertest-default-rtdb.firebaseio.com",
+    "project_id": "booktrackertest",
+    "storage_bucket": "booktrackertest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890175583755:android:2291c951e2c5a83047f90e",
+        "android_client_info": {
+          "package_name": "com.example.book_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890175583755-2ejb85f1iktddrlpb0odksfea7unrh6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA-XObUOghSWBE5VuK5r4xRv5i8852oNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890175583755-2ejb85f1iktddrlpb0odksfea7unrh6i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "890175583755-roj8j8jh2adc79bvr461g3ktcqd3obbl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bookTracker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
