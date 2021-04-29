@@ -22,11 +22,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
   //runApp(MobileApp());
-  runApp((kIsWeb)
-      ? MyApp()
-      : (Platform.isIOS || Platform.isAndroid)
-          ? MobileApp()
-          : MobileApp());
+  runApp((kIsWeb) ? MyApp() : MobileApp());
 }
 
 class MobileApp extends StatelessWidget {
