@@ -38,9 +38,9 @@ class MobileApp extends StatelessWidget {
       child: FutureBuilder(
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Firebase not working!');
-          }
+          // if (snapshot.hasError) {
+          //   return Text('Firebase not working!');
+          // }
           if (snapshot.connectionState == ConnectionState.done) {
             var user = Provider.of<User>(context);
             //print('loggedin user ==> ${user.email}');
@@ -48,7 +48,7 @@ class MobileApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: '',
 
-              home: user == null ? GettingStartedPage() : MobileMainScreen(),
+              home: user == null ? LoginPage() : MobileMainScreen(),
               //home: MobileMainScreen(),
             );
           }
@@ -97,35 +97,43 @@ class MyApp extends StatelessWidget {
           create: (context) => userBookDataStream,
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'A.Reader',
-        theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity),
-        initialRoute: '/',
-        //initialRoute: '/',
-        // routes: {
-        //   '/': (context) => GettingStartedPage(),
-        //   '/main': (context) => MainPage(),
-        //   '/login': (context) => LoginPage()
-        // },
-        //
-        /* advanced routing */
-        onGenerateRoute: (settings) {
-          print(settings.name);
-          return MaterialPageRoute(
-            builder: (context) {
-              return RouteController(settingsName: settings.name);
-            },
-          );
+      child: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'A.Reader',
+              theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  visualDensity: VisualDensity.adaptivePlatformDensity),
+              initialRoute: '/',
+              //initialRoute: '/',
+              // routes: {
+              //   '/': (context) => GettingStartedPage(),
+              //   '/main': (context) => MainPage(),
+              //   '/login': (context) => LoginPage()
+              // },
+              //
+              /* advanced routing */
+              onGenerateRoute: (settings) {
+                print(settings.name);
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return RouteController(settingsName: settings.name);
+                  },
+                );
+              },
+              onUnknownRoute: (settings) {
+                return MaterialPageRoute(builder: (context) {
+                  return PageNotFound();
+                });
+              },
+              //home: MainPage(),
+            );
+          }
+          return CircularProgressIndicator();
         },
-        onUnknownRoute: (settings) {
-          return MaterialPageRoute(builder: (context) {
-            return PageNotFound();
-          });
-        },
-        //home: MainPage(),
       ),
     );
   }
