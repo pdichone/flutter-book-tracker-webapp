@@ -32,6 +32,7 @@ void main() {
 class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('Running Mobile!');
     return MultiProvider(
       providers: [
         StreamProvider<User>(
@@ -82,6 +83,8 @@ class MyApp extends StatelessWidget {
       }).toList();
     });
 
+    print('Running Web!');
+
     return MultiProvider(
       providers: [
         StreamProvider<User>(
@@ -100,7 +103,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Book Tracker web app',
+        title: 'A.Reader',
         theme: ThemeData(
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity),

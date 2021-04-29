@@ -25,317 +25,337 @@ class MobileMainScreen extends StatelessWidget {
 
     int booksRead = 0;
     final userCollectionLink = FirebaseFirestore.instance.collection('users');
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: false,
-        title: Text(
-          'A.Reader',
-          style: Theme.of(context)
-              .textTheme
-              .headline5
-              .copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async => false, //disable the back button!
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          toolbarHeight: 80,
+          elevation: 0.0,
+          centerTitle: false,
+          title: Image.asset('assets/images/Icon-76.png'),
+          // title: Text(
+          //   'A.Reader',
+          //   style: Theme.of(context)
+          //       .textTheme
+          //       .headline5
+          //       .copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
+          // ),
+          actions: [
+            StreamBuilder<QuerySnapshot>(
+                stream: userCollectionLink.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  //Filter current user only!
+                  final usersListStream = snapshot.data.docs.map((mUser) {
+                    // print("===> ${mUser.id} currAuth: ${authUser.uid}");
+                    return MUser.fromDocument(mUser);
+                  }).where((element) {
+                    return (element.uid ==
+                        user.uid); //authuser must match one user in the list of users!
+                  }).toList();
+
+                  MUser curUser = usersListStream[0];
+                  // print(curUser.id);
+
+                  return Column(
+                    children: [
+                      CircleAvatar(
+                        child: InkWell(
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundImage: NetworkImage(
+                                curUser.avatarUrl != null
+                                    ? curUser.avatarUrl
+                                    : 'https://i.pravatar.cc/300'),
+                            backgroundColor: Colors.white,
+                            child: Text(''),
+                          ),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => createProfileMobile(
+                                  context, usersListStream, user, booksRead),
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          curUser.displayName.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: kBlackColor),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+            TextButton.icon(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut().then((value) {
+                    return Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  });
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.grey,
+                ),
+                label: Text(''))
+          ],
         ),
-        actions: [
-          StreamBuilder<QuerySnapshot>(
-              stream: userCollectionLink.snapshots(),
+        body: Column(
+          //mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              width: double.infinity,
+              // padding: EdgeInsets.only(bottom: 12),
+              // height: MediaQuery.of(context).size.height * 0.6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: RichText(
+                      text: TextSpan(
+                          style: Theme.of(context).textTheme.headline5,
+                          children: [
+                            TextSpan(text: 'Your reading\n activity '),
+                            TextSpan(
+                                text: 'right now...',
+                                style: TextStyle(fontWeight: FontWeight.bold))
+                          ]),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            StreamBuilder<QuerySnapshot>(
+              stream: books.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return CircularProgressIndicator();
                 }
 
-                //Filter current user only!
-                final usersListStream = snapshot.data.docs.map((mUser) {
-                  // print("===> ${mUser.id} currAuth: ${authUser.uid}");
-                  return MUser.fromDocument(mUser);
-                }).where((element) {
-                  return (element.uid ==
-                      user.uid); //authuser must match one user in the list of users!
+//Filter read books only!
+                final userBookFilteredReadListStream =
+                    snapshot.data.docs.map((book) {
+                  return Book.fromDocument(book);
+                }).where((book) {
+                  return (book.startedReading != null) &&
+                      (book.finishedReading != null) &&
+                      (book.userId == user.uid);
                 }).toList();
 
-                MUser curUser = usersListStream[0];
-                print(curUser.id);
+                booksRead = userBookFilteredReadListStream.length;
 
-                return CircleAvatar(
-                  child: InkWell(
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(curUser.avatarUrl != null
-                          ? curUser.avatarUrl
-                          : 'https://i.pravatar.cc/300'),
-                      backgroundColor: Colors.white,
-                      child: Text(''),
-                    ),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => createProfileMobile(
-                            context, usersListStream, user, booksRead),
-                      );
-                    },
-                  ),
+                var curUserBookList = snapshot.data.docs.map((book) {
+                  return Book.fromDocument(book);
+                }).where((book) {
+                  //only give us books from current User!
+                  return (book.userId == user.uid) &&
+                      (book.startedReading != null &&
+                          book.finishedReading == null);
+                }).toList();
+
+                // var sortedList = curUserBookList.w
+                //curUserBookList = curUserBookList.reversed.toList();
+                return Expanded(
+                  flex: 1,
+                  child: (curUserBookList.length > 0)
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: curUserBookList.length,
+                          itemBuilder: (context, index) {
+                            Book book = curUserBookList[index];
+                            String btnText = '';
+                            if (book.startedReading != null &&
+                                book.finishedReading != null) {
+                              btnText = 'Finished';
+                            } else if (book.startedReading != null &&
+                                book.finishedReading == null) {
+                              btnText = 'Reading';
+                            }
+
+                            return InkWell(
+                              child: ReadingListCard(
+                                buttonText: btnText,
+                                rating:
+                                    book.rating != null ? (book.rating) : 4.0,
+                                pressDetails: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => MobileBookDetailsPage(
+                                      book: book,
+                                    ),
+                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => MobileBookDetailsPage(
+                                  //             book: book,
+                                  //           )),
+                                  // );
+                                },
+                                pressRead: () {
+                                  //print('Read');
+                                },
+                                auth: book.author,
+                                image: book.photoUrl,
+                                title: book.title,
+                              ),
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => MobileBookDetailsPage(
+                                  book: book,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text(
+                              'You haven\'t started reading. \nStart by adding a book',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ))),
                 );
-              }),
-          TextButton.icon(
-              onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
-                  return Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                });
               },
-              icon: Icon(
-                Icons.logout,
-                color: Colors.grey,
-              ),
-              label: Text(''))
-        ],
-      ),
-      body: Column(
-        //mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: double.infinity,
-            // padding: EdgeInsets.only(bottom: 12),
-            // height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 12,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: RichText(
-                    text: TextSpan(
-                        style: Theme.of(context).textTheme.headline5,
-                        children: [
-                          TextSpan(text: 'Your reading\n activity '),
-                          TextSpan(
-                              text: 'right now...',
-                              style: TextStyle(fontWeight: FontWeight.bold))
-                        ]),
-                  ),
-                )
-              ],
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          StreamBuilder<QuerySnapshot>(
-            stream: books.snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-
-//Filter read books only!
-              final userBookFilteredReadListStream =
-                  snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                return (book.startedReading != null) &&
-                    (book.finishedReading != null) &&
-                    (book.userId == user.uid);
-              }).toList();
-
-              booksRead = userBookFilteredReadListStream.length;
-
-              var curUserBookList = snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                //only give us books from current User!
-                return (book.userId == user.uid) &&
-                    (book.startedReading != null &&
-                        book.finishedReading == null);
-              }).toList();
-
-              // var sortedList = curUserBookList.w
-              //curUserBookList = curUserBookList.reversed.toList();
-              return Expanded(
-                flex: 1,
-                child: (curUserBookList.length > 0)
-                    ? ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: curUserBookList.length,
-                        itemBuilder: (context, index) {
-                          Book book = curUserBookList[index];
-                          String btnText = '';
-                          if (book.startedReading != null &&
-                              book.finishedReading != null) {
-                            btnText = 'Finished';
-                          } else if (book.startedReading != null &&
-                              book.finishedReading == null) {
-                            btnText = 'Reading';
-                          }
-
-                          return InkWell(
-                            child: ReadingListCard(
-                              buttonText: btnText,
-                              rating: book.rating != null ? (book.rating) : 4.0,
-                              pressDetails: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => MobileBookDetailsPage(
-                                    book: book,
-                                  ),
-                                );
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => MobileBookDetailsPage(
-                                //             book: book,
-                                //           )),
-                                // );
-                              },
-                              pressRead: () {
-                                //print('Read');
-                              },
-                              auth: book.author,
-                              image: book.photoUrl,
-                              title: book.title,
-                            ),
-                            onTap: () => showDialog(
-                              context: context,
-                              builder: (context) => MobileBookDetailsPage(
-                                book: book,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Text(
-                            'You haven\'t read any books yet. \nStart adding books',
+            Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: RichText(
+                      maxLines: 2,
+                      text: TextSpan(
+                        style: TextStyle(color: kBlackColor),
+                        children: [
+                          TextSpan(
+                            text: "Reading List",
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ))),
-              );
-            },
-          ),
-          Container(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: RichText(
-                    maxLines: 2,
-                    text: TextSpan(
-                      style: TextStyle(color: kBlackColor),
-                      children: [
-                        TextSpan(
-                          text: "Reading List",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(
-            height: 8,
-          ),
-          //Reading list
+            SizedBox(
+              height: 8,
+            ),
+            //Reading list
 
-          StreamBuilder<QuerySnapshot>(
-            stream: books.snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
+            StreamBuilder<QuerySnapshot>(
+              stream: books.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
 
-              var readingListBook = snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                return (book.startedReading == null) &&
-                    (book.finishedReading == null) &&
-                    (book.userId == user.uid);
-              }).toList();
+                var readingListBook = snapshot.data.docs.map((book) {
+                  return Book.fromDocument(book);
+                }).where((book) {
+                  return (book.startedReading == null) &&
+                      (book.finishedReading == null) &&
+                      (book.userId == user.uid);
+                }).toList();
 
-              return Expanded(
-                flex: 1,
-                child: (readingListBook.length > 0)
-                    ? ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: readingListBook.length,
-                        itemBuilder: (context, index) {
-                          // final books = snapshot.data.docs.map((book) {
-                          //   return Book.fromDocument(book);
-                          // }).toList();
+                return Expanded(
+                  flex: 1,
+                  child: (readingListBook.length > 0)
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: readingListBook.length,
+                          itemBuilder: (context, index) {
+                            // final books = snapshot.data.docs.map((book) {
+                            //   return Book.fromDocument(book);
+                            // }).toList();
 
-                          Book book = readingListBook[index];
+                            Book book = readingListBook[index];
 
-                          return InkWell(
-                            child: ReadingListCard(
-                              buttonText: 'Not Started',
-                              rating: book.rating != null ? (book.rating) : 4.0,
-                              pressDetails: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => MobileBookDetailsPage(
-                                    book: book,
-                                  ),
-                                );
-                                // print(book.title);
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => MobileBookDetailsPage(
-                                //             book: book,
-                                //           )),
-                                // );
-                              },
-                              pressRead: () {
-                                //print('Read');
-                              },
-                              auth: book.author,
-                              image: book.photoUrl,
-                              title: book.title,
-                            ),
-                            onTap: () => showDialog(
-                              context: context,
-                              builder: (context) => MobileBookDetailsPage(
-                                book: book,
+                            return InkWell(
+                              child: ReadingListCard(
+                                buttonText: 'Not Started',
+                                rating:
+                                    book.rating != null ? (book.rating) : 4.0,
+                                pressDetails: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => MobileBookDetailsPage(
+                                      book: book,
+                                    ),
+                                  );
+                                  // print(book.title);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => MobileBookDetailsPage(
+                                  //             book: book,
+                                  //           )),
+                                  // );
+                                },
+                                pressRead: () {
+                                  //print('Read');
+                                },
+                                auth: book.author,
+                                image: book.photoUrl,
+                                title: book.title,
                               ),
-                            ),
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Text('No books found.  Add a Book :)',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            )),
-                      ),
-              );
-            },
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MobileBookSearchPage()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: kProgressIndicator,
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => MobileBookDetailsPage(
+                                  book: book,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text('No books found.  Add a Book :)',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              )),
+                        ),
+                );
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MobileBookSearchPage()),
+            );
+          },
+          child: Icon(Icons.add),
+          backgroundColor: kProgressIndicator,
+        ),
       ),
     );
   }
