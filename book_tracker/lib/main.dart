@@ -26,7 +26,7 @@ void main() {
       ? MyApp()
       : (Platform.isIOS || Platform.isAndroid)
           ? MobileApp()
-          : MyApp());
+          : MobileApp());
 }
 
 class MobileApp extends StatelessWidget {
