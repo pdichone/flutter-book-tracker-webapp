@@ -57,12 +57,13 @@ class MobileMainScreen extends StatelessWidget {
                 }).toList();
 
                 MUser curUser = usersListStream[0];
+                print(curUser.id);
 
                 return CircleAvatar(
                   child: InkWell(
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundImage: NetworkImage(curUser.avatarUrl.isNotEmpty
+                      backgroundImage: NetworkImage(curUser.avatarUrl != null
                           ? curUser.avatarUrl
                           : 'https://i.pravatar.cc/300'),
                       backgroundColor: Colors.white,
@@ -176,7 +177,7 @@ class MobileMainScreen extends StatelessWidget {
                           return InkWell(
                             child: ReadingListCard(
                               buttonText: btnText,
-                              rating: book.rating != null ? book.rating : 4,
+                              rating: book.rating != null ? (book.rating) : 4.0,
                               pressDetails: () {
                                 showDialog(
                                   context: context,
@@ -281,7 +282,7 @@ class MobileMainScreen extends StatelessWidget {
                           return InkWell(
                             child: ReadingListCard(
                               buttonText: 'Not Started',
-                              rating: book.rating != null ? book.rating : 4,
+                              rating: book.rating != null ? (book.rating) : 4.0,
                               pressDetails: () {
                                 showDialog(
                                   context: context,

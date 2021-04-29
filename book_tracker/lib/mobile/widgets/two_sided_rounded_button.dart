@@ -10,7 +10,7 @@ class TwoSideRoundedButton extends StatelessWidget {
     Key key,
     this.text,
     this.color = kBlackColor,
-    this.radious = 29,
+    this.radious = 30,
     this.press,
   }) : super(key: key);
 

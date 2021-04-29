@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+  //runApp(MobileApp());
   runApp((kIsWeb)
       ? MyApp()
       : (Platform.isIOS || Platform.isAndroid)

@@ -1,10 +1,11 @@
+import 'package:book_tracker/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Book {
   final String title;
   final String author;
-  final int rating;
+  final double rating;
   final String notes;
   final String photoUrl;
   final bool isFinished;
@@ -40,7 +41,7 @@ class Book {
         title: data.data()['title'],
         author: data.data()['author'],
         notes: data.data()['notes'],
-        rating: data.data()['rating'],
+        rating: parseDouble(data.data()['rating']), //must use parseDouble() for this to work!!https://stackoverflow.com/questions/56253227/unhandled-exception-type-string-is-not-a-subtype-of-type-double-even-if-a-d
         photoUrl: data.data()['photo_url'],
         publishedDate: data.data()['published_date'],
         description: data.data()['description'],

@@ -8,7 +8,7 @@ class ReadingListCard extends StatelessWidget {
   final String image;
   final String title;
   final String auth;
-  final int rating;
+  final double rating;
   final String buttonText;
   final Book book;
   final bool isBookRead;
@@ -31,9 +31,10 @@ class ReadingListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 24, bottom: 40),
-      height: 245,
+      // color: Colors.blue,
+      margin: EdgeInsets.only(left: 24, bottom: 0),
       width: 202,
+      // width: MediaQuery.of(context).size.width * 0.48 - 4,
       child: Stack(
         children: <Widget>[
           Positioned(
@@ -41,6 +42,7 @@ class ReadingListCard extends StatelessWidget {
             right: 0,
             child: Container(
               height: 244,
+              //height: MediaQuery.of(context).size.height * 0.25 + 13,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(29),
@@ -72,7 +74,7 @@ class ReadingListCard extends StatelessWidget {
                   ),
                   onPressed: () {},
                 ),
-                BookRating(score: rating),
+                BookRating(score: (rating)),
               ],
             ),
           ),
@@ -123,6 +125,7 @@ class ReadingListCard extends StatelessWidget {
                         child: TwoSideRoundedButton(
                           text: buttonText,
                           press: pressRead,
+                          color: kLightPurple,
                         ),
                       )
                     ],
