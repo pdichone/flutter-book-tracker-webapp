@@ -29,11 +29,23 @@ class MobileMainScreen extends StatelessWidget {
       onWillPop: () async => false, //disable the back button!
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          toolbarHeight: 80,
+          backgroundColor: Colors.white24,
+          toolbarHeight: 77,
           elevation: 0.0,
           centerTitle: false,
-          title: Image.asset('assets/images/Icon-76.png'),
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/Icon-76.png',
+                scale: 2,
+              ),
+              Text(
+                'A.Reader',
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Colors.redAccent, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
           // title: Text(
           //   'A.Reader',
           //   style: Theme.of(context)
