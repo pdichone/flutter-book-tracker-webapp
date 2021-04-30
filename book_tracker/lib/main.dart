@@ -29,6 +29,7 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('Running Mobile!');
+
     return MultiProvider(
       providers: [
         StreamProvider<User>(
@@ -39,7 +40,7 @@ class MobileApp extends StatelessWidget {
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
           // if (snapshot.hasError) {
-          //   return Text('Firebase not working!');
+          //   return Material(child: Text('Firebase not working!'));
           // }
           if (snapshot.connectionState == ConnectionState.done) {
             var user = Provider.of<User>(context);
