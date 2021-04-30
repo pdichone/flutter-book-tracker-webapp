@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/mobile/screens/mobile_book_details.dart';
-import 'package:book_tracker/mobile/widgets/reading_card_list.dart';
+
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/utils/utils.dart';
@@ -202,14 +202,14 @@ Widget createProfileMobile(
                   itemCount: curUserBookList.length,
                   itemBuilder: (context, index) {
                     Book book = curUserBookList[index];
-                    String btnText = '';
-                    if (book.startedReading != null &&
-                        book.finishedReading != null) {
-                      btnText = 'Finished';
-                    } else if (book.startedReading != null &&
-                        book.finishedReading == null) {
-                      btnText = 'Reading';
-                    }
+
+                    // if (book.startedReading != null &&
+                    //     book.finishedReading != null) {
+                    //   btnText = 'Finished';
+                    // } else if (book.startedReading != null &&
+                    //     book.finishedReading == null) {
+                    //   btnText = 'Reading';
+                    // }
                     return Container(
                       child: Card(
                         elevation: 2.0,

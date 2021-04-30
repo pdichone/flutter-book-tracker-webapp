@@ -1,9 +1,9 @@
 import 'package:book_tracker/constants/constants.dart';
-import 'package:book_tracker/main.dart';
+
 import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/mobile/widgets/two_sided_rounded_button.dart';
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/widgets/main_page.dart';
+
 import 'package:book_tracker/utils/utils.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -184,9 +184,12 @@ class _BookDetailsPageState extends State<MobileBookDetailsPage> {
                         color: Colors.green,
                       );
                   }
+                  return Icon(
+                    Icons.sentiment_neutral,
+                    color: Colors.redAccent,
+                  );
                 },
                 onRatingUpdate: (rating) {
-                  print(rating.toInt());
                   setState(() {
                     _rating = rating;
                   });

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:firebase_auth/firebase_auth.dart';

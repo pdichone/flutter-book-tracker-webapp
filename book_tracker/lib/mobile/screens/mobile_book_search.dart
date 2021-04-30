@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/mobile/screens/mobile_search_book_detail.dart';
 import 'package:book_tracker/model/book.dart';
-import 'package:book_tracker/screens/search_book_details_dialog.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class MobileBookSearchPage extends StatefulWidget {
   @override

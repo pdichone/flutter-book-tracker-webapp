@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:book_tracker/mobile/screens/mobile_main_screen.dart';
 import 'package:book_tracker/services/create_user.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
