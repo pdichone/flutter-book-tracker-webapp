@@ -26,7 +26,7 @@ class MobileMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white24,
-        toolbarHeight: 77,
+        toolbarHeight: 73,
         elevation: 0.0,
         centerTitle: false,
         title: Row(
