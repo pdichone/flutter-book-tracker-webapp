@@ -14,17 +14,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   //runApp(MobileApp());
-  runApp((kIsWeb) ? MyApp() : MobileApp());
+  runApp(MyApp());
 }
 
 class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print('Running Mobile!');
-
     return MultiProvider(
       providers: [
-        StreamProvider<User>(
+        StreamProvider<User?>(
             create: (context) => FirebaseAuth.instance.authStateChanges(),
             initialData: null),
       ],
@@ -72,77 +70,66 @@ class MyApp extends StatelessWidget {
       }).toList();
     });
 
-    print('Running Web!');
-
     return MultiProvider(
-      providers: [
-        StreamProvider<User>(
-            create: (context) => FirebaseAuth.instance.authStateChanges(),
-            initialData: null),
-        Provider<CollectionReference>(
-          create: (context) => linkCollection,
-        ),
-        StreamProvider<List<Book>>(
-          initialData: [],
-          catchError: (context, error) {
-            return [];
-          },
-          create: (context) => userBookDataStream,
-        ),
-      ],
-      child: FutureBuilder(
-        future: Firebase.initializeApp(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'A.Reader',
-              theme: ThemeData(
-                  primarySwatch: Colors.blue,
-                  visualDensity: VisualDensity.adaptivePlatformDensity),
-              initialRoute: '/',
-              //initialRoute: '/',
-              // routes: {
-              //   '/': (context) => GettingStartedPage(),
-              //   '/main': (context) => MainPage(),
-              //   '/login': (context) => LoginPage()
-              // },
-              //
-              /* advanced routing */
-              onGenerateRoute: (settings) {
-                print(settings.name);
-                return MaterialPageRoute(
-                  builder: (context) {
-                    return RouteController(settingsName: settings.name);
-                  },
-                );
+        providers: [
+          StreamProvider<User?>(
+              create: (context) => FirebaseAuth.instance.authStateChanges(),
+              initialData: null),
+          Provider<CollectionReference>(
+            create: (context) => linkCollection,
+          ),
+          StreamProvider<List<Book>>(
+            initialData: [],
+            catchError: (context, error) {
+              return [];
+            },
+            create: (context) => userBookDataStream,
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'A.Reader',
+          theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity),
+          initialRoute: '/',
+          //initialRoute: '/',
+          // routes: {
+          //   '/': (context) => GettingStartedPage(),
+          //   '/main': (context) => MainPage(),
+          //   '/login': (context) => LoginPage()
+          // },
+          //
+          /* advanced routing */
+          onGenerateRoute: (settings) {
+            print(settings.name);
+            return MaterialPageRoute(
+              builder: (context) {
+                return RouteController(settingsName: settings.name);
               },
-              onUnknownRoute: (settings) {
-                return MaterialPageRoute(builder: (context) {
-                  return PageNotFound();
-                });
-              },
-              //home: MainPage(),
             );
-          }
-          return CircularProgressIndicator();
-        },
-      ),
-    );
+          },
+          onUnknownRoute: (settings) {
+            return MaterialPageRoute(builder: (context) {
+              return PageNotFound();
+            });
+          },
+          //home: MainPage(),
+        ));
   }
 }
 
 class RouteController extends StatelessWidget {
-  final String settingsName;
+  final String? settingsName;
   const RouteController({
-    Key key,
-    @required this.settingsName,
+    Key? key,
+    required this.settingsName,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final userSignedIn = Provider.of<User>(context) != null;
-    //print(userSignedIn);
+    print(userSignedIn);
     final signedInGotoMain =
         userSignedIn && settingsName == '/main'; // they are good to go!
     final notSignedInGotoMain = !userSignedIn &&
@@ -158,3 +145,48 @@ class RouteController extends StatelessWidget {
     }
   }
 }
+
+/*
+ class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var userStream = FirebaseAuth.instance.authStateChanges();
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'BookTracker',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: StreamBuilder<User>(
+        stream: userStream,
+        builder: (context, snapshot) {
+          final userSignedIn = snapshot.data != null;
+
+          return userSignedIn ? MainScreenPage() : LoginPage();
+        },
+        //child: GetStartedPage()
+      ),
+    );
+  }
+}
+*/
+
+/*
+  Deployment:
+
+flutter run -d chrome --release (will run in release mode [for testing])
+flutter build web
+
+Firebase init - start the deployment process
+Flutter build web
+For public directory use build/web (this is where the assets are)
+For overriding say “n”
+… single page app… say “y”
+Then firebase deploy
+
+iOS running on device - if you want to see apps installed on iOS devices, 
+must run “flutter run --release”.  Otherwise, the app will always crash when you try to tap the app icon and launch it on device.
+
+
+*/

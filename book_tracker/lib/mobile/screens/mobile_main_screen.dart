@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 class MobileMainScreen extends StatelessWidget {
   const MobileMainScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class MobileMainScreen extends StatelessWidget {
             ),
             Text(
               'A.Reader',
-              style: Theme.of(context).textTheme.headline6.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                   color: Colors.redAccent, fontWeight: FontWeight.bold),
             ),
           ],
@@ -60,7 +60,7 @@ class MobileMainScreen extends StatelessWidget {
                 }
 
                 //Filter current user only!
-                final usersListStream = snapshot.data.docs.map((mUser) {
+                final usersListStream = snapshot.data!.docs.map((mUser) {
                   // print("===> ${mUser.id} currAuth: ${authUser.uid}");
                   return MUser.fromDocument(mUser);
                 }).where((element) {
@@ -79,7 +79,7 @@ class MobileMainScreen extends StatelessWidget {
                           radius: 60,
                           backgroundImage: NetworkImage(
                               curUser.avatarUrl != null
-                                  ? curUser.avatarUrl
+                                  ? curUser.avatarUrl!
                                   : 'https://i.pravatar.cc/300'),
                           backgroundColor: Colors.white,
                           child: Text(''),
@@ -88,7 +88,7 @@ class MobileMainScreen extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (context) => createProfileMobile(
-                                context, usersListStream, user, booksRead),
+                                context, usersListStream, user, booksRead)!,
                           );
                         },
                       ),
@@ -96,7 +96,7 @@ class MobileMainScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        curUser.displayName.toUpperCase(),
+                        curUser.displayName!.toUpperCase(),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(color: kBlackColor),
                       ),
@@ -159,9 +159,8 @@ class MobileMainScreen extends StatelessWidget {
                 return CircularProgressIndicator();
               }
 
-//Filter read books only!
               final userBookFilteredReadListStream =
-                  snapshot.data.docs.map((book) {
+                  snapshot.data!.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
                 return (book.startedReading != null) &&
@@ -171,7 +170,7 @@ class MobileMainScreen extends StatelessWidget {
 
               booksRead = userBookFilteredReadListStream.length;
 
-              var curUserBookList = snapshot.data.docs.map((book) {
+              var curUserBookList = snapshot.data!.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
                 //only give us books from current User!
@@ -180,8 +179,6 @@ class MobileMainScreen extends StatelessWidget {
                         book.finishedReading == null);
               }).toList();
 
-              // var sortedList = curUserBookList.w
-              //curUserBookList = curUserBookList.reversed.toList();
               return Expanded(
                 flex: 1,
                 child: (curUserBookList.length > 0)
@@ -210,6 +207,10 @@ class MobileMainScreen extends StatelessWidget {
                                     book: book,
                                   ),
                                 );
+
+                                // rating: _rating == null
+                                //     ? widget.book.rating
+                                //     : _rating,
                                 // Navigator.push(
                                 //   context,
                                 //   MaterialPageRoute(
@@ -283,7 +284,7 @@ class MobileMainScreen extends StatelessWidget {
                 return CircularProgressIndicator();
               }
 
-              var readingListBook = snapshot.data.docs.map((book) {
+              var readingListBook = snapshot.data!.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
                 return (book.startedReading == null) &&

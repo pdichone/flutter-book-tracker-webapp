@@ -11,13 +11,13 @@ class CreateAccountForm extends StatelessWidget {
   final GlobalKey<FormState> _globalKey;
 
   const CreateAccountForm({
-    Key key,
-    @required TextEditingController emailTextController,
-    @required TextEditingController passwordTextController,
-    @required Key formKey,
+    Key? key,
+    required TextEditingController emailTextController,
+    required TextEditingController passwordTextController,
+    required Key formKey,
   })  : _emailTextController = emailTextController,
         _passwordTextController = passwordTextController,
-        _globalKey = formKey,
+        _globalKey = formKey as GlobalKey<FormState>,
         super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class CreateAccountForm extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
               validator: (value) {
-                return value.isEmpty ? 'Please add an email' : null;
+                return value!.isEmpty ? 'Please add an email' : null;
               },
               controller: _emailTextController,
               decoration: buildInputDecoration('Email', 'gina@google.com'),
@@ -43,7 +43,7 @@ class CreateAccountForm extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
               validator: (value) {
-                return value.isEmpty
+                return value!.isEmpty
                     ? 'Password must be at least 6 chars long'
                     : null;
               },
@@ -68,7 +68,7 @@ class CreateAccountForm extends StatelessWidget {
                 onSurface: Colors.grey,
               ),
               onPressed: () {
-                if (_globalKey.currentState.validate()) {
+                if (_globalKey.currentState!.validate()) {
                   String email = _emailTextController.text;
                   FirebaseAuth.instance
                       .createUserWithEmailAndPassword(

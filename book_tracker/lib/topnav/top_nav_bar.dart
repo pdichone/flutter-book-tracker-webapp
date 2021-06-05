@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class TopBarNav extends StatelessWidget {
   final String title;
   const TopBarNav({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
   }) : super(key: key);
 
   @override

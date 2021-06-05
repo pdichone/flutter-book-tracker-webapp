@@ -18,7 +18,7 @@ class BookSearchPage extends StatefulWidget {
 class _BookSearchPageState extends State<BookSearchPage> {
   List<Book> listOfBooks = [];
 
-  TextEditingController _searchTextController;
+  TextEditingController? _searchTextController;
   bool listIsFull = false;
 
   @override
@@ -39,23 +39,23 @@ class _BookSearchPageState extends State<BookSearchPage> {
       // print('Items ==> ${list.toString()}');
 
       for (var item in list) {
-        String title = item['volumeInfo']['title'];
-        String author = item['volumeInfo']['authors'] == null
+        String? title = item['volumeInfo']['title'];
+        String? author = item['volumeInfo']['authors'] == null
             ? "N/A"
             : item['volumeInfo']['authors'][0];
-        String thumbNail = (item['volumeInfo']['imageLinks'] == null)
+        String? thumbNail = (item['volumeInfo']['imageLinks'] == null)
             ? ""
             : item['volumeInfo']['imageLinks']['thumbnail'];
-        String publishedDate = item['volumeInfo']['publishedDate'] == null
+        String? publishedDate = item['volumeInfo']['publishedDate'] == null
             ? "N/A"
             : item['volumeInfo']['publishedDate'];
-        String description = item['volumeInfo']['description'] == null
+        String? description = item['volumeInfo']['description'] == null
             ? "N/A"
             : item['volumeInfo']['description'];
-        int pageCount = item['volumeInfo']['pageCount'] == null
+        int? pageCount = item['volumeInfo']['pageCount'] == null
             ? 0
             : item['volumeInfo']['pageCount'];
-        String categories = item['volumeInfo']['categories'] == null
+        String? categories = item['volumeInfo']['categories'] == null
             ? "N/A"
             : item['volumeInfo']['categories'][0];
 
@@ -145,7 +145,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
   }
 
   void _search() async {
-    await fetchBooks(_searchTextController.text).then((value) {
+    await fetchBooks(_searchTextController!.text).then((value) {
       setState(() {
         listOfBooks = value;
         //print('SetState size ==> ${listOfBooks.length}');
@@ -177,9 +177,9 @@ class _BookSearchPageState extends State<BookSearchPage> {
               children: [
                 Image.network(
                   //'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80',
-                  (book.photoUrl == null || book.photoUrl.isEmpty)
+                  (book.photoUrl == null || book.photoUrl!.isEmpty)
                       ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
-                      : book.photoUrl,
+                      : book.photoUrl!,
 
                   height: 100,
                   width: 160,

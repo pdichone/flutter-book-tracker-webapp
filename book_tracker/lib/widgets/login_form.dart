@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({
-    Key key,
-    @required TextEditingController emailTextController,
-    @required TextEditingController passwordTextController,
-    @required Key formKey,
+    Key? key,
+    required TextEditingController emailTextController,
+    required TextEditingController passwordTextController,
+    required Key formKey,
   })  : _emailTextController = emailTextController,
         _passwordTextController = passwordTextController,
-        _globalKey = formKey,
+        _globalKey = formKey as GlobalKey<FormState>,
         super(key: key);
 
   final TextEditingController _emailTextController;
@@ -32,7 +32,7 @@ class LoginForm extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
               validator: (value) {
-                return value.isEmpty ? 'Please add an email' : null;
+                return value!.isEmpty ? 'Please add an email' : null;
               },
               controller: _emailTextController,
               decoration: buildInputDecoration('Email', 'gina@google.com'),
@@ -42,7 +42,7 @@ class LoginForm extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: TextFormField(
               validator: (value) {
-                return value.isEmpty ? 'Enter a password' : null;
+                return value!.isEmpty ? 'Enter a password' : null;
               },
               obscureText: true, //it's a password :)
               controller: _passwordTextController,
@@ -63,7 +63,7 @@ class LoginForm extends StatelessWidget {
                 onSurface: Colors.grey,
               ),
               onPressed: () {
-                if (_globalKey.currentState.validate()) {
+                if (_globalKey.currentState!.validate()) {
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: _emailTextController.text,

@@ -5,18 +5,18 @@ import 'package:book_tracker/model/book.dart';
 import 'package:flutter/material.dart';
 
 class ReadingListCard extends StatelessWidget {
-  final String image;
-  final String title;
-  final String auth;
-  final double rating;
-  final String buttonText;
-  final Book book;
-  final bool isBookRead;
-  final Function pressDetails;
-  final Function pressRead;
+  final String? image;
+  final String? title;
+  final String? auth;
+  final double? rating;
+  final String? buttonText;
+  final Book? book;
+  final bool? isBookRead;
+  final Function? pressDetails;
+  final Function? pressRead;
 
   const ReadingListCard({
-    Key key,
+    Key? key,
     this.image,
     this.isBookRead,
     this.title,
@@ -59,7 +59,7 @@ class ReadingListCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.network(
-              image,
+              image!,
               width: 100,
             ),
           ),
@@ -113,7 +113,7 @@ class ReadingListCard extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       GestureDetector(
-                        onTap: pressDetails,
+                        onTap: pressDetails as void Function()?,
                         child: Container(
                           width: 101,
                           padding: EdgeInsets.symmetric(vertical: 10),

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class MainBodyDashboard extends StatelessWidget {
   const MainBodyDashboard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -65,7 +65,7 @@ class MainBodyDashboard extends StatelessWidget {
 
                   //Filter 'reading' books!!
                   final userBookFilteredDataStream =
-                      snapshot.data.docs.map((book) {
+                      snapshot.data!.docs.map((book) {
                     return Book.fromDocument(book);
                   }).where((book) {
                     //only give us books that are being read, currently!
@@ -112,7 +112,7 @@ class MainBodyDashboard extends StatelessWidget {
                   //Filter to show only books that haven't been started and finished
 
                   final userBookFilteredReadingListStream =
-                      snapshot.data.docs.map((book) {
+                      snapshot.data!.docs.map((book) {
                     return Book.fromDocument(book);
                   }).where((book) {
                     return (book.startedReading == null) &&
@@ -157,9 +157,9 @@ class MainBodyDashboard extends StatelessWidget {
             child: Wrap(
               children: [
                 Image.network(
-                  (book.photoUrl == null || book.photoUrl.isEmpty)
+                  (book.photoUrl == null || book.photoUrl!.isEmpty)
                       ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
-                      : book.photoUrl,
+                      : book.photoUrl!,
                   //fit: BoxFit.cover,
                   height: 100,
                   width: 160,

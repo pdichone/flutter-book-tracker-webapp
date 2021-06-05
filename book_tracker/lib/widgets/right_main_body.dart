@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 
 class RightMainBody extends StatelessWidget {
   const RightMainBody({
-    Key key,
-    @required this.books,
+    Key? key,
+    required this.books,
   }) : super(key: key);
 
   final List<String> books;
@@ -36,7 +36,7 @@ class RightMainBody extends StatelessWidget {
           );
         }
         //Filter read books only!
-        final userBookFilteredReadListStream = snapshot.data.docs.map((book) {
+        final userBookFilteredReadListStream = snapshot.data!.docs.map((book) {
           return Book.fromDocument(book);
         }).where((book) {
           return (book.startedReading != null) &&
@@ -65,7 +65,7 @@ class RightMainBody extends StatelessWidget {
                       }
 
                       //Filter current user only!
-                      final usersListStream = snapshot.data.docs.map((mUser) {
+                      final usersListStream = snapshot.data!.docs.map((mUser) {
                         // print("===> ${mUser.id} currAuth: ${authUser.uid}");
                         return MUser.fromDocument(mUser);
                       }).where((element) {
@@ -128,13 +128,13 @@ class RightMainBody extends StatelessWidget {
                                               ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
                                               : userBookFilteredReadListStream[
                                                       index]
-                                                  .photoUrl,
+                                                  .photoUrl!,
                                         ),
                                         radius: 50,
                                       )),
                                   trailing: Column(children: [
                                     Text(
-                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading!).toString().split(',')[0]}',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           fontSize: 13),
@@ -184,13 +184,13 @@ class RightMainBody extends StatelessWidget {
                                               ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
                                               : userBookFilteredReadListStream[
                                                       index]
-                                                  .photoUrl,
+                                                  .photoUrl!,
                                         ),
                                         radius: 50,
                                       )),
                                   trailing: Column(children: [
                                     Text(
-                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading!).toString().split(',')[0]}',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           fontSize: 13),
@@ -240,13 +240,13 @@ class RightMainBody extends StatelessWidget {
                                               ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
                                               : userBookFilteredReadListStream[
                                                       index]
-                                                  .photoUrl,
+                                                  .photoUrl!,
                                         ),
                                         radius: 50,
                                       )),
                                   trailing: Column(children: [
                                     Text(
-                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading).toString().split(',')[0]}',
+                                      'Finished: ${formattDate(userBookFilteredReadListStream[index].finishedReading!).toString().split(',')[0]}',
                                       style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           fontSize: 13),

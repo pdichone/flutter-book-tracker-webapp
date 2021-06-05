@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 
 class SearchedBookDetailDialog extends StatelessWidget {
   const SearchedBookDetailDialog({
-    Key key,
-    @required this.book,
-    @required CollectionReference collectionReference,
+    Key? key,
+    required this.book,
+    required CollectionReference collectionReference,
   })  : _collectionReference = collectionReference,
         super(key: key);
 
@@ -38,7 +38,7 @@ class SearchedBookDetailDialog extends StatelessWidget {
               '${book.title}',
               style: Theme.of(context)
                   .textTheme
-                  .headline4
+                  .headline4!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
           ),

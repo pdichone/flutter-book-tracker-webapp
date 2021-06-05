@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 
 class UpdateUserProfile extends StatelessWidget {
   const UpdateUserProfile({
-    Key key,
-    @required this.user,
-    @required TextEditingController displayNameTextController,
-    @required TextEditingController professionTextController,
-    @required TextEditingController quoteTextController,
-    @required TextEditingController avatarTextController,
+    Key? key,
+    required this.user,
+    required TextEditingController displayNameTextController,
+    required TextEditingController professionTextController,
+    required TextEditingController quoteTextController,
+    required TextEditingController avatarTextController,
   })  : _displayNameTextController = displayNameTextController,
         _professionTextController = professionTextController,
         _quoteTextController = quoteTextController,
@@ -118,11 +118,39 @@ class UpdateUserProfile extends StatelessWidget {
             },
           ),
         ),
-        // TextButton(
-        //     onPressed: () {
+       /*
+            final userChangedName =
+                    user.displayName != _displayNameTextController.text;
 
-        //     },
-        //     child: Text('Update')),
+                final userChangedAvatar =
+                    user.avatarUrl != _avatarTextController.text;
+
+                final userChangeProfession =
+                    user.profession != _profesionTextController.text;
+
+                final userChangedQuote =
+                    user.quote != _quoteTextController.text;
+                final userNeedUpdate = userChangedName ||
+                    userChangedAvatar ||
+                    userChangeProfession ||
+                    userChangedQuote;
+
+                if (userNeedUpdate) {
+                 
+
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.id)
+                      .update(MUser(
+                              uid: user.uid, //was passing user.id!! hence giving me errors!! Something to watch for!
+                              displayName: _displayNameTextController.text,
+                              avatarUrl: _avatarTextController.text,
+                              profession: _profesionTextController.text,
+                              quote: _quoteTextController.text)
+                          .toMap());
+                }
+                Navigator.of(context).pop();
+       */
 
         TwoSideRoundedButton(
           color: kButtonColor,

@@ -2,12 +2,12 @@ import 'package:book_tracker/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class TwoSideRoundedButton extends StatelessWidget {
-  final String text;
+  final String? text;
   final double radious;
-  final Function press;
+  final Function? press;
   final Color color;
   const TwoSideRoundedButton({
-    Key key,
+    Key? key,
     this.text,
     this.color = kBlackColor,
     this.radious = 30,
@@ -17,7 +17,7 @@ class TwoSideRoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: press,
+      onTap: press as void Function()?,
       child: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -29,7 +29,7 @@ class TwoSideRoundedButton extends StatelessWidget {
           ),
         ),
         child: Text(
-          text,
+          text!,
           style: TextStyle(color: Colors.white),
         ),
       ),

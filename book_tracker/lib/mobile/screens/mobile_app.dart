@@ -28,21 +28,40 @@ class MobileApp extends StatelessWidget {
             }
 
             return ListView(
-              children: snapshot.data.docs.map((DocumentSnapshot document) {
-                // print(" ==>>${document.data()['photo_url']}");
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> info = document.data() as Map<String, dynamic>;
+
+                print(" ==>>${info['photo_url']}");
                 return new ListTile(
                   leading: CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.green,
-                    child: (document.data()['photo_url'] != null)
-                        ? Image.network(document.data()['photo_url'])
+                    child: (info['photo_url'] != null)
+                        ? Image.network(info['photo_url'])
                         : Image.network('https://i.pravatar.cc/300'),
                   ),
-                  title: new Text(document.data()['title']),
-                  subtitle: new Text(document.data()['author']),
+                  title: new Text(info['title']),
+                  subtitle: new Text(info['author']),
                 );
               }).toList(),
             );
+
+            // return ListView(
+            //   children: snapshot.data.docs.map((DocumentSnapshot document) {
+            //     print(" ==>>${document.data()['photo_url']}");
+            //     return new ListTile(
+            //       leading: CircleAvatar(
+            //         radius: 40,
+            //         backgroundColor: Colors.green,
+            //         child: (document.data()['photo_url'] != null)
+            //             ? Image.network(document.data()['photo_url'])
+            //             : Image.network('https://i.pravatar.cc/300'),
+            //       ),
+            //       title: new Text(document.data()['title']),
+            //       subtitle: new Text(document.data()['author']),
+            //     );
+            //   }).toList(),
+            // );
           },
         )),
       ),

@@ -1,4 +1,3 @@
-
 import 'package:book_tracker/widgets/create_account_form.dart';
 import 'package:book_tracker/widgets/login_form.dart';
 import 'package:flutter/material.dart';

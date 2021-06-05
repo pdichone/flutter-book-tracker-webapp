@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class AddBookManually extends StatelessWidget {
   const AddBookManually({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -19,7 +19,8 @@ class AddBookManually extends StatelessWidget {
       style: ButtonStyle(),
       icon: Icon(Icons.add),
       label: Text('Add a book'),
-      onPressed: () {
+      onPressed: () async {
+        //add async
         //Open an alert form dialog
         return showDialog(
             context: context,

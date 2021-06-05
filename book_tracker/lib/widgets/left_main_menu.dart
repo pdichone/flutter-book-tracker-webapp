@@ -3,7 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class LeftMainMenu extends StatelessWidget {
   const LeftMainMenu({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

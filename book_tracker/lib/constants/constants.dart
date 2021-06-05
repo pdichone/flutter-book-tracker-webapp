@@ -23,7 +23,7 @@ double parseDouble(dynamic value) {
     }
   } catch (e) {
     // return null if double.parse fails
-    return null;
+    return 0.0;
   }
 }
 

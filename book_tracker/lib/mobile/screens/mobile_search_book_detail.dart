@@ -8,9 +8,9 @@ import 'package:book_tracker/constants/constants.dart';
 
 class MobileSearchedBookDetailDialog extends StatelessWidget {
   const MobileSearchedBookDetailDialog({
-    Key key,
-    @required this.book,
-    @required CollectionReference collectionReference,
+    Key? key,
+    required this.book,
+    required CollectionReference collectionReference,
   })  : _collectionReference = collectionReference,
         super(key: key);
 
@@ -40,7 +40,7 @@ class MobileSearchedBookDetailDialog extends StatelessWidget {
               '${book.title}',
               style: Theme.of(context)
                   .textTheme
-                  .headline4
+                  .headline4!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
           ),

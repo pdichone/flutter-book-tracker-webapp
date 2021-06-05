@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-Widget createProfile(BuildContext context, List<MUser> list, User authUser) {
+Widget? createProfile(BuildContext context, List<MUser> list, User authUser) {
   TextEditingController _displayNameTextController =
       TextEditingController(text: list[0].displayName);
   TextEditingController _professionTextController =
@@ -14,7 +14,7 @@ Widget createProfile(BuildContext context, List<MUser> list, User authUser) {
   TextEditingController _quoteTextController =
       TextEditingController(text: list[0].quote);
 
-  Widget widget;
+  Widget? widget;
 
   for (var user in list) {
     widget = Container(
@@ -37,7 +37,7 @@ Widget createProfile(BuildContext context, List<MUser> list, User authUser) {
               backgroundColor: Colors.transparent,
               backgroundImage: NetworkImage(user.avatarUrl == null
                   ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
-                  : user.avatarUrl),
+                  : user.avatarUrl!),
               radius: 50,
             ),
           ),
@@ -47,7 +47,7 @@ Widget createProfile(BuildContext context, List<MUser> list, User authUser) {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  '${user.displayName.toUpperCase()}',
+                  '${user.displayName!.toUpperCase()}',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
@@ -126,7 +126,7 @@ Widget createProfile(BuildContext context, List<MUser> list, User authUser) {
                               : " \"${user.quote} \"",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyText2!
                               .copyWith(fontStyle: FontStyle.italic),
                         )),
                       ),

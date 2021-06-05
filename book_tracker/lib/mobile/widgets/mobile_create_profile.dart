@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-Widget createProfileMobile(
+Widget? createProfileMobile(
     BuildContext context, List<MUser> list, User authUser, int booksRead) {
   TextEditingController _displayNameTextController =
       TextEditingController(text: list[0].displayName);
@@ -23,7 +23,7 @@ Widget createProfileMobile(
   TextEditingController _quoteTextController =
       TextEditingController(text: list[0].quote);
 
-  Widget widget;
+  Widget? widget;
 
   CollectionReference books = FirebaseFirestore.instance.collection('books');
 
@@ -46,7 +46,7 @@ Widget createProfileMobile(
                   backgroundColor: Colors.transparent,
                   backgroundImage: NetworkImage(user.avatarUrl == null
                       ? 'https://media.istockphoto.com/photos/ethnic-profile-picture-id185249635?k=6&m=185249635&s=612x612&w=0&h=8U5SlsY9iGJcHqBSxd_r6PLbgGFylccForDTK8drYcg='
-                      : user.avatarUrl),
+                      : user.avatarUrl!),
                   radius: 50,
                 ),
               ),
@@ -67,7 +67,7 @@ Widget createProfileMobile(
             'Books Read ($booksRead)',
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyText1!
                 .copyWith(color: Colors.redAccent),
           ),
           Row(
@@ -76,7 +76,7 @@ Widget createProfileMobile(
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  '${user.displayName.toUpperCase()}',
+                  '${user.displayName!.toUpperCase()}',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
@@ -158,7 +158,7 @@ Widget createProfileMobile(
                               : " \"${user.quote} \"",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText2
+                              .bodyText2!
                               .copyWith(fontStyle: FontStyle.italic),
                         )),
                       ),
@@ -177,7 +177,7 @@ Widget createProfileMobile(
 
 //Filter read books only!
               final userBookFilteredReadListStream =
-                  snapshot.data.docs.map((book) {
+                  snapshot.data!.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
                 return (book.startedReading != null) &&
@@ -187,7 +187,7 @@ Widget createProfileMobile(
 
               booksRead = userBookFilteredReadListStream.length;
 
-              var curUserBookList = snapshot.data.docs.map((book) {
+              var curUserBookList = snapshot.data!.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
                 //only give us books from current User that were read!
@@ -222,13 +222,13 @@ Widget createProfileMobile(
                                 title: Text('${book.title}'),
                                 leading: CircleAvatar(
                                   radius: 35,
-                                  backgroundImage: NetworkImage(book.photoUrl),
+                                  backgroundImage: NetworkImage(book.photoUrl!),
                                 ),
                                 subtitle: Text('${book.author}'),
                                 isThreeLine: true,
                               ),
                               Text(
-                                  'Finished: ${formattDate(book.finishedReading)}')
+                                  'Finished: ${formattDate(book.finishedReading!)}')
                             ],
                           ),
                           onTap: () {
@@ -279,3 +279,45 @@ Widget createProfileMobile(
   }
   return widget;
 }
+
+/*
+
+Container(
+          height: 100,
+          width: 190,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: bookList.length,
+            itemBuilder: (context, index) {
+              Book book = bookList[index];
+
+              return ListTile(
+                title: Text('${book.title}'),
+              );
+
+              //return Container(
+              // width: 200,
+
+              // child: Card(
+              //   elevation: 2.0,
+              //   child: Column(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: [
+              //       ListTile(
+              //         title: Text('${book.title}'),
+              //         leading: CircleAvatar(
+              //           radius: 35,
+              //           backgroundImage: NetworkImage(book.photoUrl),
+              //         ),
+              //         subtitle: Text('${book.author}'),
+              //       ),
+              //       Text('Finished: ${formatDate(book.finishedReading)}')
+              //     ],
+              //   ),
+              // ),
+              // );
+            },
+          ),
+        )
+*/

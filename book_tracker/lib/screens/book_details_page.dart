@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BookDetailsPage extends StatefulWidget {
-  final Book book;
+  final Book? book;
 
-  const BookDetailsPage({Key key, this.book}) : super(key: key);
+  const BookDetailsPage({Key? key, this.book}) : super(key: key);
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -26,13 +26,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     final user = Provider.of<User>(context);
 
     TextEditingController _titleTextController =
-        TextEditingController(text: widget.book.title);
+        TextEditingController(text: widget.book!.title);
     TextEditingController _authorTextController =
-        TextEditingController(text: widget.book.author);
+        TextEditingController(text: widget.book!.author);
     TextEditingController _photoTextController =
-        TextEditingController(text: widget.book.photoUrl);
+        TextEditingController(text: widget.book!.photoUrl);
     TextEditingController _notesTextController =
-        TextEditingController(text: widget.book.notes);
+        TextEditingController(text: widget.book!.notes);
     return Scaffold(
       appBar: AppBar(
         title: Text('Book Details'),
@@ -56,7 +56,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.transparent,
                         backgroundImage:
-                            NetworkImage('${widget.book.photoUrl}'),
+                            NetworkImage('${widget.book!.photoUrl}'),
                         radius: 50,
                       ),
                     ),
@@ -91,7 +91,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           TextButton.icon(
-                              onPressed: widget.book.startedReading == null
+                              onPressed: widget.book!.startedReading == null
                                   ? () {
                                       //capture the timestamp (date) and update startDate field
                                       setState(() {
@@ -104,7 +104,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                     }
                                   : null,
                               icon: Icon(Icons.book_sharp),
-                              label: (widget.book.startedReading == null)
+                              label: (widget.book!.startedReading == null)
                                   ? (!isReadingClicked)
                                       ? Text('Start Reading this Book')
                                       : Text(
@@ -113,9 +113,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                               color: Colors.grey.shade300),
                                         )
                                   : Text(
-                                      "Started on: ${formattDate(widget.book.startedReading)}")),
+                                      "Started on: ${formattDate(widget.book!.startedReading!)}")),
                           TextButton.icon(
-                              onPressed: widget.book.finishedReading == null
+                              onPressed: widget.book!.finishedReading == null
                                   ? () {
                                       //capture the timestamp (date) and update endDate field
                                       setState(() {
@@ -128,7 +128,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                     }
                                   : null,
                               icon: Icon(Icons.add),
-                              label: (widget.book.finishedReading == null)
+                              label: (widget.book!.finishedReading == null)
                                   ? (!isFinishedRadingClicked)
                                       ? Text(
                                           'Mark as Read',
@@ -136,7 +136,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                       : Text('Finished Reading!',
                                           style: TextStyle(color: Colors.grey))
                                   : Text(
-                                      "Finished on ${formattDate(widget.book.finishedReading)}")),
+                                      "Finished on ${formattDate(widget.book!.finishedReading!)}")),
                         ],
                       ),
                     ),
@@ -166,14 +166,14 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                             ),
                             onPressed: () {
                               // Only update if new data was entered
-                              final userChangedTitle = widget.book.title !=
+                              final userChangedTitle = widget.book!.title !=
                                   _titleTextController.text;
-                              final userChangedAuthor = widget.book.author !=
+                              final userChangedAuthor = widget.book!.author !=
                                   _authorTextController.text;
-                              final userChangedPhotoUrl = widget.book.author !=
+                              final userChangedPhotoUrl = widget.book!.author !=
                                   _photoTextController.text;
 
-                              final userChangedNotes = widget.book.notes !=
+                              final userChangedNotes = widget.book!.notes !=
                                   _notesTextController.text;
 
                               final bookUpdate = userChangedTitle ||
@@ -184,7 +184,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                               // print('user changed notes $userChangedNotes');
 
                               if (bookUpdate) {
-                                _collectionReference.doc(widget.book.id).update(
+                                _collectionReference.doc(widget.book!.id).update(
                                     Book(
                                             userId: user.uid,
                                             title: _titleTextController.text,
@@ -192,12 +192,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                             photoUrl: _photoTextController.text,
                                             startedReading: isReadingClicked
                                                 ? Timestamp.now()
-                                                : widget.book.startedReading,
+                                                : widget.book!.startedReading,
                                             finishedReading:
                                                 isFinishedRadingClicked
                                                     ? Timestamp.now()
                                                     : widget
-                                                        .book.finishedReading,
+                                                        .book!.finishedReading,
                                             notes: _notesTextController.text)
                                         .toMap());
                               }
@@ -219,7 +219,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                           onPressed: () {
                                             // delete!
                                             _collectionReference
-                                                .doc(widget.book.id)
+                                                .doc(widget.book!.id)
                                                 .delete();
                                             //go back to main page
                                             Navigator.push(
